@@ -1,0 +1,6 @@
+"""API routes package."""
+
+from .health import router as health_router
+from .targets import router as targets_router
+
+__all__ = ["health_router", "targets_router"]

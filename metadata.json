@@ -1,0 +1,6 @@
+{
+  "name": "SPHEREx Sky Explorer",
+  "description": "Explore NASA SPHEREx all-sky infrared images and detect sky changes over time through blinking, timelines, and side-by-side comparison.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

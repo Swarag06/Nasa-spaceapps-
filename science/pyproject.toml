@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spherex-science"
+version = "0.1.0"
+description = "Science and data preparation library for SPHEREx Sky Explorer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "astropy>=6.0",
+    "astroquery>=0.4.7",
+    "pyvo>=1.5",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "reproject>=0.13",
+    "pillow>=10.0",
+    "matplotlib>=3.7",
+    "httpx>=0.27",
+    "pydantic>=2.0",
+    "pytest>=8.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["science*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["..", "."]
+

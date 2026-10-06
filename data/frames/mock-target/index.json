@@ -1,0 +1,51 @@
+{
+  "target": "mock-target",
+  "title": "Mock target",
+  "ra": 0.0,
+  "dec": 0.0,
+  "caption": "Placeholder data for development.",
+  "frames": [
+    {
+      "file": "frame_000.webp",
+      "obs_id": "mock-000",
+      "time_utc": "2025-03-01T12:00:00Z",
+      "wavelength_um": 0.95,
+      "detector": 1
+    },
+    {
+      "file": "frame_001.webp",
+      "obs_id": "mock-001",
+      "time_utc": "2025-03-15T14:30:00Z",
+      "wavelength_um": 1.35,
+      "detector": 2
+    },
+    {
+      "file": "frame_002.webp",
+      "obs_id": "mock-002",
+      "time_utc": "2025-04-02T08:15:00Z",
+      "wavelength_um": 1.95,
+      "detector": 3
+    },
+    {
+      "file": "frame_003.webp",
+      "obs_id": "mock-003",
+      "time_utc": "2025-04-20T21:45:00Z",
+      "wavelength_um": 2.85,
+      "detector": 4
+    },
+    {
+      "file": "frame_004.webp",
+      "obs_id": "mock-004",
+      "time_utc": "2025-05-10T11:00:00Z",
+      "wavelength_um": 3.95,
+      "detector": 5
+    },
+    {
+      "file": "frame_005.webp",
+      "obs_id": "mock-005",
+      "time_utc": "2025-06-01T16:20:00Z",
+      "wavelength_um": 4.65,
+      "detector": 6
+    }
+  ]
+}
