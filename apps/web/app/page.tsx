@@ -102,7 +102,7 @@ export function SkyExplorerContent() {
           <div className="p-4 rounded-xl border border-red-900/50 bg-red-950/20 text-red-300 text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-red-400" />
-              <span>Failed to connect to the SPHEREx API backend. Make sure the FastAPI server is running.</span>
+              <span>Failed to load SPHEREx targets from the remote repository. Check network connection or FRAMES_BASE_URL.</span>
             </div>
             <button
               onClick={() => refetchTargets()}

@@ -19,6 +19,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   const [isZoomed, setIsZoomed] = useState(false);
   const [hasError, setHasError] = useState(false);
 
+  React.useEffect(() => {
+    setHasError(false);
+  }, [frame?.file, targetId]);
+
   if (!frame) {
     return (
       <div className={`relative flex items-center justify-center min-h-[420px] rounded-2xl border border-zinc-800 bg-zinc-950/80 text-zinc-500 ${className}`}>

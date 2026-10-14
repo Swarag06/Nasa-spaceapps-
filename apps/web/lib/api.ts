@@ -1,86 +1,74 @@
 import { TargetFramesIndex, TargetSummary } from './types';
 
-// Read API base URL from Next.js env var (or Vite client env in preview)
-export const getApiBaseUrl = (): string => {
-  if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
-  // @ts-ignore - Handle Vite client env
-  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) {
-    // @ts-ignore
-    return import.meta.env.VITE_API_URL;
-  }
-  return '';
-};
+// Raw config value as specified by the requirements
+export const RAW_FRAMES_BASE_URL = "https://https://swarag06.github.io/spherex-frames";
+
+// Normalized config URL ensuring valid HTTP/HTTPS protocol
+export const FRAMES_BASE_URL = RAW_FRAMES_BASE_URL.replace(/^https?:\/\/https?:\/\//i, 'https://');
+
+interface TargetsJsonResponse {
+  targets: string[];
+}
 
 /**
- * Fetch list of all available SPHEREx targets.
+ * Fetch list of targets from ${FRAMES_BASE_URL}/targets.json.
+ * For each target id, loads its metadata from ${FRAMES_BASE_URL}/${id}/index.json.
  */
 export async function fetchTargets(): Promise<TargetSummary[]> {
-  const baseUrl = getApiBaseUrl();
-  const url = baseUrl ? `${baseUrl}/targets` : '/targets';
-
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch targets: ${res.statusText}`);
-    }
-    return await res.json();
-  } catch (err) {
-    // Fallback for standalone mock environment
-    console.warn('API /targets unreachable, checking local static index fallback:', err);
-    try {
-      const fallbackRes = await fetch('/static/frames/mock-target/index.json');
-      if (fallbackRes.ok) {
-        const data: TargetFramesIndex = await fallbackRes.json();
-        return [
-          {
-            id: data.target,
-            title: data.title,
-            ra: data.ra,
-            dec: data.dec,
-            caption: data.caption,
-            frame_count: data.frames.length,
-          },
-        ];
-      }
-    } catch {
-      // ignore
-    }
-    throw err;
+  const url = `${FRAMES_BASE_URL}/targets.json`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch targets from ${url}: ${res.statusText}`);
   }
+
+  const data: TargetsJsonResponse = await res.json();
+  const ids: string[] = Array.isArray(data.targets) ? data.targets : [];
+
+  // Fetch index.json for each target to populate titles and coordinates
+  const targets = await Promise.all(
+    ids.map(async (id) => {
+      try {
+        const targetData = await fetchTargetFrames(id);
+        return {
+          id: targetData.target || id,
+          title: targetData.title || id,
+          ra: targetData.ra ?? 0.0,
+          dec: targetData.dec ?? 0.0,
+          caption: targetData.caption || '',
+          frame_count: targetData.frames?.length || 0,
+        };
+      } catch (err) {
+        console.warn(`Could not load full index for target ${id}:`, err);
+        return {
+          id,
+          title: id,
+          ra: 0.0,
+          dec: 0.0,
+          caption: '',
+          frame_count: 0,
+        };
+      }
+    })
+  );
+
+  return targets;
 }
 
 /**
- * Fetch frames and metadata index for a target by ID.
+ * Fetch a target's metadata and frames from ${FRAMES_BASE_URL}/${targetId}/index.json.
  */
 export async function fetchTargetFrames(targetId: string): Promise<TargetFramesIndex> {
-  const baseUrl = getApiBaseUrl();
-  const url = baseUrl ? `${baseUrl}/targets/${targetId}/frames` : `/targets/${targetId}/frames`;
-
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch frames for target ${targetId}: ${res.statusText}`);
-    }
-    return await res.json();
-  } catch (err) {
-    // Fallback to static index.json if backend server is not directly accessible
-    console.warn(`API /targets/${targetId}/frames unreachable, attempting static fallback:`, err);
-    const staticUrl = `/static/frames/${targetId}/index.json`;
-    const fallbackRes = await fetch(staticUrl);
-    if (fallbackRes.ok) {
-      return await fallbackRes.json();
-    }
-    throw err;
+  const url = `${FRAMES_BASE_URL}/${targetId}/index.json`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch frames for target ${targetId} from ${url}: ${res.statusText}`);
   }
+  return await res.json();
 }
 
 /**
- * Construct full URL to load a frame WebP image.
+ * Construct full URL for a frame image: ${FRAMES_BASE_URL}/${targetId}/${filename}.
  */
 export function getFrameImageUrl(targetId: string, filename: string): string {
-  const baseUrl = getApiBaseUrl();
-  const path = `/static/frames/${targetId}/${filename}`;
-  return baseUrl ? `${baseUrl}${path}` : path;
+  return `${FRAMES_BASE_URL}/${targetId}/${filename}`;
 }
