@@ -216,15 +216,33 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
       }
     };
 
+    let triedProxyA = false;
+    let triedProxyB = false;
+
     const onError = () => {
       setDiffError('Failed to load frames for difference calculation.');
       setDiffLoading(false);
     };
 
     imgA.onload = onLoaded;
-    imgA.onerror = onError;
+    imgA.onerror = () => {
+      if (!triedProxyA) {
+        triedProxyA = true;
+        imgA.src = `/remote-frames/${targetId}/${frameA.file}`;
+      } else {
+        onError();
+      }
+    };
+
     imgB.onload = onLoaded;
-    imgB.onerror = onError;
+    imgB.onerror = () => {
+      if (!triedProxyB) {
+        triedProxyB = true;
+        imgB.src = `/remote-frames/${targetId}/${frameB.file}`;
+      } else {
+        onError();
+      }
+    };
 
     imgA.src = urlA;
     imgB.src = urlB;

@@ -31,26 +31,32 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   // Requirement: Stacked view mode
   const [isStackedView, setIsStackedView] = useState<boolean>(false);
 
+  // Determine which image file to load (single epoch or stacked image)
+  const currentImageFile = isStackedView && stack ? stack : frame?.file || '';
+  const imageUrl = getFrameImageUrl(targetId, currentImageFile);
+
+  const [imgSrc, setImgSrc] = useState<string>(imageUrl);
+  const [triedProxy, setTriedProxy] = useState<boolean>(false);
+
   // Reset error state and reset stacked view when target changes
   useEffect(() => {
     setHasError(false);
-  }, [frame?.file, targetId, isStackedView]);
+    setTriedProxy(false);
+    setImgSrc(imageUrl);
+  }, [imageUrl, targetId, isStackedView]);
 
   useEffect(() => {
     setIsStackedView(false);
   }, [targetId]);
 
-  if (!frame && !stack) {
-    return (
-      <div className={`relative flex items-center justify-center min-h-[420px] rounded-2xl border border-zinc-800 bg-zinc-950/80 text-zinc-500 ${className}`}>
-        <span>No frame selected</span>
-      </div>
-    );
-  }
-
-  // Determine which image file to load (single epoch or stacked image)
-  const currentImageFile = isStackedView && stack ? stack : frame?.file || '';
-  const imageUrl = getFrameImageUrl(targetId, currentImageFile);
+  const handleImageError = () => {
+    if (!triedProxy) {
+      setTriedProxy(true);
+      setImgSrc(`/remote-frames/${targetId}/${currentImageFile}`);
+    } else {
+      setHasError(true);
+    }
+  };
 
   return (
     <div
@@ -170,10 +176,10 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
           >
             {/* The Stretched WebP Image */}
             <img
-              key={imageUrl}
-              src={imageUrl}
+              key={imgSrc}
+              src={imgSrc}
               alt={`SPHEREx Observation ${frame?.obs_id || 'stack'}`}
-              onError={() => setHasError(true)}
+              onError={handleImageError}
               className="max-h-[520px] max-w-full rounded-lg object-contain shadow-inner pointer-events-none"
               style={{ imageRendering: 'pixelated' }}
             />
