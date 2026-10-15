@@ -53,9 +53,16 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
                   <span className={`text-sm font-medium ${isSelected ? 'text-cyan-200' : 'text-zinc-200'}`}>
                     {target.title}
                   </span>
-                  <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded">
-                    <Layers className="w-3 h-3 text-cyan-400" />
-                    <span>{target.frame_count} frames</span>
+                  <div className="flex items-center gap-1.5">
+                    {target.tracking && (
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.5 rounded">
+                        Tracking
+                      </span>
+                    )}
+                    <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded">
+                      <Layers className="w-3 h-3 text-cyan-400" />
+                      <span>{target.frame_count} frames</span>
+                    </div>
                   </div>
                 </div>
 

@@ -35,6 +35,8 @@ export async function fetchTargets(): Promise<TargetSummary[]> {
           ra: targetData.ra ?? 0.0,
           dec: targetData.dec ?? 0.0,
           caption: targetData.caption || '',
+          tracking: targetData.tracking,
+          stack: targetData.stack,
           frame_count: targetData.frames?.length || 0,
         };
       } catch (err) {

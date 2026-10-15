@@ -16,6 +16,8 @@ export interface TargetFramesIndex {
   ra: number;
   dec: number;
   caption: string;
+  tracking?: boolean;
+  stack?: string;
   frames: FrameItem[];
 }
 
@@ -25,6 +27,8 @@ export interface TargetSummary {
   ra: number;
   dec: number;
   caption: string;
+  tracking?: boolean;
+  stack?: string;
   frame_count: number;
 }
 

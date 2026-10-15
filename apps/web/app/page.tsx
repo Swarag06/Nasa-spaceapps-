@@ -9,7 +9,8 @@ import { ImageViewer } from '../components/ImageViewer';
 import { Timeline } from '../components/Timeline';
 import { ComparisonViewer } from '../components/ComparisonViewer';
 import { ExplainerPanel } from '../components/ExplainerPanel';
-import { Telescope, Flame, Eye, RefreshCw, AlertTriangle, Layers } from 'lucide-react';
+import { FirstVisitTour } from '../components/FirstVisitTour';
+import { Telescope, Flame, Eye, RefreshCw, AlertTriangle, Layers, HelpCircle } from 'lucide-react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,7 +27,25 @@ export function SkyExplorerContent() {
   const [currentFrameIndex, setCurrentFrameIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [fps, setFps] = useState(2);
-  const [activeMode, setActiveMode] = useState<'single' | 'blink'>('single');
+  const [activeMode, setActiveMode] = useState<'single' | 'compare'>('single');
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  // Check first-visit tour status in sessionStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const tourSeen = sessionStorage.getItem('spherex_tour_seen');
+      if (!tourSeen) {
+        setIsTourOpen(true);
+      }
+    }
+  }, []);
+
+  const handleCloseTour = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('spherex_tour_seen', 'true');
+    }
+    setIsTourOpen(false);
+  };
 
   // Automatically select first target once loaded
   useEffect(() => {
@@ -66,31 +85,43 @@ export function SkyExplorerContent() {
             </div>
           </div>
 
-          {/* Mode Switcher Tabs */}
-          <div className="flex items-center gap-1 bg-zinc-900/90 border border-zinc-800 rounded-lg p-1 text-xs">
+          {/* Header Controls: Tour Button + Mode Switcher Tabs */}
+          <div className="flex items-center gap-2">
             <button
-              onClick={() => setActiveMode('single')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
-                activeMode === 'single'
-                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
+              onClick={() => setIsTourOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 hover:bg-zinc-800 text-xs text-zinc-300 hover:text-white transition font-medium shadow-sm"
+              title="Open First-Visit Interactive Tour"
             >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Timeline Viewer</span>
+              <HelpCircle className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="hidden sm:inline">Quick Tour</span>
             </button>
 
-            <button
-              onClick={() => setActiveMode('blink')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
-                activeMode === 'blink'
-                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <Flame className="w-3.5 h-3.5" />
-              <span>Blink Comparator</span>
-            </button>
+            {/* Mode Switcher Tabs */}
+            <div className="flex items-center gap-1 bg-zinc-900/90 border border-zinc-800 rounded-lg p-1 text-xs">
+              <button
+                onClick={() => setActiveMode('single')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
+                  activeMode === 'single'
+                    ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Timeline Viewer</span>
+              </button>
+
+              <button
+                onClick={() => setActiveMode('compare')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition ${
+                  activeMode === 'compare'
+                    ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Flame className="w-3.5 h-3.5" />
+                <span>Compare</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -140,7 +171,9 @@ export function SkyExplorerContent() {
                     RA: <span className="text-zinc-300">{framesData.ra.toFixed(4)}°</span> &nbsp;|&nbsp; Dec:{' '}
                     <span className="text-zinc-300">{framesData.dec.toFixed(4)}°</span>
                   </div>
-                  <p className="text-xs text-zinc-400 pt-1 leading-relaxed">{framesData.caption}</p>
+                  {framesData.caption && (
+                    <p className="text-xs text-zinc-400 pt-1 leading-relaxed">{framesData.caption}</p>
+                  )}
                 </div>
 
                 <div className="mt-2 pt-2 border-t border-zinc-900 flex items-center justify-between text-[11px] font-mono text-zinc-500">
@@ -167,7 +200,13 @@ export function SkyExplorerContent() {
               </div>
             ) : activeMode === 'single' ? (
               <>
-                <ImageViewer targetId={selectedTargetId} frame={currentFrame} />
+                <ImageViewer
+                  targetId={selectedTargetId}
+                  frame={currentFrame}
+                  tracking={framesData?.tracking}
+                  stack={framesData?.stack}
+                  caption={framesData?.caption}
+                />
 
                 <Timeline
                   frames={frames}
@@ -180,14 +219,27 @@ export function SkyExplorerContent() {
                 />
               </>
             ) : (
-              <ComparisonViewer targetId={selectedTargetId} frames={frames} />
+              <ComparisonViewer
+                targetId={selectedTargetId}
+                frames={frames}
+                tracking={framesData?.tracking}
+              />
             )}
 
-            {/* Scientific Explainer Panel */}
-            <ExplainerPanel />
+            {/* "What am I looking at?" Explainer Panel */}
+            <ExplainerPanel
+              caption={framesData?.caption}
+              targetTitle={framesData?.title}
+            />
           </div>
         </div>
       </main>
+
+      {/* First-Visit Session Tour */}
+      <FirstVisitTour
+        isOpen={isTourOpen}
+        onClose={handleCloseTour}
+      />
 
       {/* Footer */}
       <footer className="border-t border-zinc-900 bg-zinc-950/80 py-4 px-4 text-center text-xs text-zinc-500 font-mono">
