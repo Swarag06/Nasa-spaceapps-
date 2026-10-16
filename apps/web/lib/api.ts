@@ -12,6 +12,9 @@ const FALLBACK_TARGET_IDS = [
   "3i-atlas-aug",
   "3i-atlas-aug-stacked",
   "3i-atlas-aug-buildup",
+  "3i-atlas-dec",
+  "3i-atlas-dec-stacked",
+  "3i-atlas-dec-buildup",
 ];
 
 interface TargetsJsonResponse {

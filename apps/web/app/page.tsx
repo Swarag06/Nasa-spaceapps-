@@ -47,10 +47,11 @@ export function SkyExplorerContent() {
     setIsTourOpen(false);
   };
 
-  // Automatically select first target once loaded
+  // Automatically select target once loaded (prefer Comet 3I/ATLAS)
   useEffect(() => {
     if (targets.length > 0 && !selectedTargetId) {
-      setSelectedTargetId(targets[0].id);
+      const preferred = targets.find((t) => t.id === '3i-atlas-aug') || targets[0];
+      setSelectedTargetId(preferred.id);
     }
   }, [targets, selectedTargetId]);
 
