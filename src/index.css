@@ -1,1 +1,214 @@
 @import "tailwindcss";
+
+/* ==========================================================================
+   CSS Media Queries & Responsive Layout Engine (900px Breakpoint)
+   ========================================================================== */
+
+html,
+body,
+#root {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #07090e;
+  -webkit-tap-highlight-color: transparent;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Touch safe area adjustments for mobile bottom bars */
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/* Enforce 44px minimum height for interactive buttons across all viewports */
+button,
+select,
+.btn-min-44 {
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   Accessibility: Visible Focus Outline & Reduced Motion
+   ========================================================================== */
+
+/* Visible high-contrast focus outline for all interactive controls */
+:focus-visible {
+  outline: 2px solid #22d3ee !important; /* Tailwind cyan-400: high contrast against dark */
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25) !important;
+}
+
+/* Respect user's system preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   Screens BELOW 900px: Mobile Layout
+   ========================================================================== */
+@media (max-width: 899.98px) {
+  /* Main content container on screens below 900px */
+  .explorer-main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 5.5rem !important; /* safe spacing for bottom bar */
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Desktop sidebar is hidden from page flow; opens via menu button / slide-up drawer */
+  .desktop-sidebar {
+    display: none !important;
+  }
+
+  /* Image fills the full screen width at the top */
+  .image-viewer-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .image-viewer-aspect {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+
+  /* Side-by-side view stacks vertically below 900px */
+  .side-by-side-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
+  .side-by-side-pane {
+    width: 100% !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  /* Comparison viewer container fills width below 900px */
+  .comparison-container {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Content under the image that needs side padding (timeline, controls, explainer) */
+  .mobile-padded-content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Mobile bottom bar is visible below 900px */
+  .mobile-bottom-bar {
+    display: flex !important;
+  }
+
+  /* Mobile menu button / drawer trigger is visible below 900px */
+  .mobile-drawer-trigger {
+    display: inline-flex !important;
+  }
+}
+
+/* ==========================================================================
+   Screens 900px AND ABOVE: Desktop Layout Unchanged
+   ========================================================================== */
+@media (min-width: 900px) {
+  .explorer-main {
+    max-width: 80rem !important; /* max-w-7xl */
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    padding-top: 1.5rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  /* Desktop 2-column grid layout (4 cols sidebar, 8 cols main content) */
+  .desktop-layout-grid {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    gap: 1.5rem !important;
+    align-items: start !important;
+  }
+
+  .desktop-sidebar {
+    display: flex !important;
+    grid-column: span 4 / span 4 !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+
+  .desktop-main-col {
+    grid-column: span 8 / span 8 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.25rem !important;
+  }
+
+  /* Image container on desktop */
+  .image-viewer-container {
+    border-radius: 1rem !important;
+    border-width: 1px !important;
+  }
+
+  /* Side-by-side view is 2-column side by side on 900px and above */
+  .side-by-side-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+
+  .side-by-side-pane {
+    border-radius: 1rem !important;
+    border-width: 1px !important;
+  }
+
+  .comparison-container {
+    border-radius: 1rem !important;
+    border-width: 1px !important;
+    padding: 1.25rem !important;
+  }
+
+  .mobile-padded-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Mobile bottom bar and triggers are hidden on desktop */
+  .mobile-bottom-bar {
+    display: none !important;
+  }
+
+  .mobile-drawer-trigger {
+    display: none !important;
+  }
+}

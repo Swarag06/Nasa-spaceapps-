@@ -100,57 +100,66 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
         <div className="flex flex-col gap-3">
           {/* GROUP 1: Comet 3I/ATLAS with Month Switch and View Switch */}
           <div
-            onClick={() => onSelect(currentAtlasId)}
-            className={`group text-left p-3.5 rounded-xl border transition-all duration-150 flex flex-col gap-2.5 cursor-pointer ${
+            className={`group text-left p-3.5 rounded-xl border transition-all duration-150 flex flex-col gap-2.5 ${
               isAtlasSelected
                 ? 'border-cyan-500/80 bg-cyan-950/30 shadow-[0_0_20px_rgba(6,182,212,0.18)] ring-1 ring-cyan-500/40'
                 : 'border-zinc-800/80 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70'
             }`}
           >
-            {/* Header: Title + Tracking Badge + Frames */}
-            <div className="flex items-center justify-between">
+            {/* Accessible Header Button: Title + Tracking Badge + Frames */}
+            <button
+              type="button"
+              onClick={() => onSelect(currentAtlasId)}
+              aria-pressed={isAtlasSelected}
+              aria-label={`Select Comet 3I/ATLAS (${atlasMonth === 'aug' ? 'August' : 'December'}, ${
+                atlasView === 'stacked' ? 'Stacked over days' : atlasView === 'buildup' ? 'Build-up' : 'Single frames'
+              })`}
+              className="w-full flex items-center justify-between text-left rounded-lg p-1 -m-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 min-h-[44px] cursor-pointer"
+            >
               <div className="flex items-center gap-2">
                 <div className="p-1.5 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-400">
-                  <Orbit className="w-4 h-4" />
+                  <Orbit className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className={`text-sm font-semibold tracking-tight ${isAtlasSelected ? 'text-cyan-200' : 'text-zinc-100'}`}>
                     Comet 3I/ATLAS
                   </h3>
-                  <div className="text-[10px] font-mono text-zinc-400">
+                  <div className="text-[10px] font-mono text-zinc-300">
                     Interstellar Comet &bull; Centre-tracked
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5">
-                <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-500/40 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-500/40 px-2 py-0.5 rounded-full font-semibold">
                   Tracking
                 </span>
-                <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded">
-                  <Layers className="w-3 h-3 text-cyan-400" />
+                <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded">
+                  <Layers className="w-3 h-3 text-cyan-400" aria-hidden="true" />
                   <span>{currentAtlasTarget.frame_count} frames</span>
                 </div>
               </div>
-            </div>
+            </button>
 
             {/* Month Switch: August / December */}
             <div className="flex flex-col gap-1 pt-1 border-t border-zinc-800/60" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-300">
                 <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-cyan-400" />
+                  <Calendar className="w-3 h-3 text-cyan-400" aria-hidden="true" />
                   Epoch Month:
                 </span>
-                <span className="text-zinc-500">{atlasMonth === 'aug' ? 'Aug 2025' : 'Dec 2025'}</span>
+                <span className="text-zinc-300 font-semibold">{atlasMonth === 'aug' ? 'Aug 2025' : 'Dec 2025'}</span>
               </div>
-              <div className="grid grid-cols-2 gap-1 p-0.5 rounded-lg bg-zinc-950/90 border border-zinc-800">
+              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-zinc-950/90 border border-zinc-800" role="group" aria-label="Comet 3I/ATLAS Observation Month">
                 <button
                   type="button"
                   onClick={() => handleMonthChange('aug')}
-                  className={`py-1.5 px-2 rounded-md text-xs font-medium transition ${
+                  aria-pressed={atlasMonth === 'aug'}
+                  aria-label="Select August 2025 epoch for Comet 3I/ATLAS"
+                  className={`min-h-[44px] px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center transition active:scale-95 ${
                     atlasMonth === 'aug'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/50 shadow-sm'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
                   }`}
                 >
                   August
@@ -158,10 +167,12 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
                 <button
                   type="button"
                   onClick={() => handleMonthChange('dec')}
-                  className={`py-1.5 px-2 rounded-md text-xs font-medium transition ${
+                  aria-pressed={atlasMonth === 'dec'}
+                  aria-label="Select December 2025 epoch for Comet 3I/ATLAS"
+                  className={`min-h-[44px] px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-center transition active:scale-95 ${
                     atlasMonth === 'dec'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/50 shadow-sm'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
                   }`}
                 >
                   December
@@ -169,25 +180,27 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
               </div>
             </div>
 
-            {/* View Switch: "Single frames", "Stacked over days", "Build-up" */}
-            <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+            {/* View Switch: "Single frames", "Stacked over days", "Build-up" (All min-h-[44px]) */}
+            <div className="flex flex-col gap-1.5" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-300">
                 <span className="flex items-center gap-1">
-                  <Eye className="w-3 h-3 text-cyan-400" />
+                  <Eye className="w-3 h-3 text-cyan-400" aria-hidden="true" />
                   View Mode:
                 </span>
-                <span className="text-cyan-400 font-mono lowercase">
+                <span className="text-cyan-300 font-mono lowercase truncate max-w-[160px] font-semibold">
                   {currentAtlasId}
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-1 p-0.5 rounded-lg bg-zinc-950/90 border border-zinc-800 text-[11px]">
+              <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-zinc-950/90 border border-zinc-800 text-[11px]" role="group" aria-label="Comet 3I/ATLAS Processing Mode">
                 <button
                   type="button"
                   onClick={() => handleViewChange('single')}
-                  className={`py-1.5 px-1 rounded-md font-medium text-center truncate transition ${
+                  aria-pressed={atlasView === 'single'}
+                  aria-label="Single frames view for Comet 3I/ATLAS"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
                     atlasView === 'single'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/50 shadow-sm'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
                   }`}
                   title="Single frames"
                 >
@@ -196,10 +209,12 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
                 <button
                   type="button"
                   onClick={() => handleViewChange('stacked')}
-                  className={`py-1.5 px-1 rounded-md font-medium text-center truncate transition ${
+                  aria-pressed={atlasView === 'stacked'}
+                  aria-label="Stacked over days view for Comet 3I/ATLAS"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
                     atlasView === 'stacked'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/50 shadow-sm'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
                   }`}
                   title="Stacked over days"
                 >
@@ -208,10 +223,12 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
                 <button
                   type="button"
                   onClick={() => handleViewChange('buildup')}
-                  className={`py-1.5 px-1 rounded-md font-medium text-center truncate transition ${
+                  aria-pressed={atlasView === 'buildup'}
+                  aria-label="Build-up view for Comet 3I/ATLAS"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
                     atlasView === 'buildup'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/50 shadow-sm'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
                   }`}
                   title="Build-up"
                 >
@@ -222,13 +239,13 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
 
             {/* Active Coordinates & Caption */}
             <div className="pt-2 border-t border-zinc-800/60 flex flex-col gap-1">
-              <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                <Compass className="w-3.5 h-3.5 text-zinc-500" />
+              <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
+                <Compass className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                 <span>
                   RA {currentAtlasTarget.ra.toFixed(3)}&deg; &nbsp; Dec {currentAtlasTarget.dec.toFixed(3)}&deg;
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400 line-clamp-2 leading-relaxed">
+              <p className="text-[11px] text-zinc-300 line-clamp-2 leading-relaxed">
                 {currentAtlasTarget.caption}
               </p>
             </div>
@@ -240,39 +257,42 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
             return (
               <button
                 key={target.id}
+                type="button"
                 onClick={() => onSelect(target.id)}
-                className={`group text-left p-3.5 rounded-xl border transition-all duration-150 flex flex-col gap-1.5 ${
+                aria-pressed={isSelected}
+                aria-label={`Select target ${target.title || target.id}`}
+                className={`group text-left p-3.5 rounded-xl border transition-all duration-150 flex flex-col gap-1.5 min-h-[44px] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                   isSelected
                     ? 'border-cyan-500/70 bg-cyan-950/30 shadow-[0_0_15px_rgba(6,182,212,0.15)] ring-1 ring-cyan-500/30'
                     : 'border-zinc-800/80 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className={`text-sm font-medium ${isSelected ? 'text-cyan-200' : 'text-zinc-200'}`}>
+                  <span className={`text-sm font-semibold ${isSelected ? 'text-cyan-200' : 'text-zinc-100'}`}>
                     {target.title || target.id}
                   </span>
                   <div className="flex items-center gap-1.5">
                     {target.tracking && (
-                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-1.5 py-0.5 rounded font-semibold">
                         Tracking
                       </span>
                     )}
-                    <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-400 bg-zinc-800/80 px-2 py-0.5 rounded">
-                      <Layers className="w-3 h-3 text-cyan-400" />
+                    <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded">
+                      <Layers className="w-3 h-3 text-cyan-400" aria-hidden="true" />
                       <span>{target.frame_count} frames</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-                  <Compass className="w-3.5 h-3.5 text-zinc-500" />
+                <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
+                  <Compass className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                   <span>
                     RA {target.ra.toFixed(3)}&deg; &nbsp; Dec {target.dec.toFixed(3)}&deg;
                   </span>
                 </div>
 
                 {target.caption && (
-                  <p className="text-[11px] text-zinc-400 line-clamp-1">
+                  <p className="text-[11px] text-zinc-300 line-clamp-1 leading-relaxed">
                     {target.caption}
                   </p>
                 )}

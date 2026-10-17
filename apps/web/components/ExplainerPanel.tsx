@@ -24,7 +24,7 @@ export const ExplainerPanel: React.FC<ExplainerPanelProps> = ({
       {/* Collapsible Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-900/40 transition group"
+        className="w-full min-h-[44px] flex items-center justify-between p-4 text-left hover:bg-zinc-900/40 transition group"
       >
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-400 group-hover:border-cyan-400/60 transition shadow-sm">

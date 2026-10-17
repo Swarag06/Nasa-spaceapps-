@@ -108,7 +108,7 @@ export const FirstVisitTour: React.FC<FirstVisitTourProps> = ({ isOpen, onClose 
 
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition active:scale-95"
             aria-label="Close tour"
           >
             <X className="w-5 h-5" />
@@ -135,11 +135,11 @@ export const FirstVisitTour: React.FC<FirstVisitTourProps> = ({ isOpen, onClose 
           {step.description}
         </p>
 
-        {/* Action Controls */}
+        {/* Action Controls - All buttons min-h-[44px] */}
         <div className="flex items-center justify-between pt-2 border-t border-zinc-900">
           <button
             onClick={onClose}
-            className="text-xs font-mono text-zinc-500 hover:text-zinc-300 transition px-2 py-1"
+            className="min-h-[44px] px-3 flex items-center text-xs font-mono text-zinc-400 hover:text-zinc-200 transition active:scale-95"
           >
             Skip Tour
           </button>
@@ -148,26 +148,26 @@ export const FirstVisitTour: React.FC<FirstVisitTourProps> = ({ isOpen, onClose 
             {!isFirst && (
               <button
                 onClick={handlePrev}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900 text-xs text-zinc-300 hover:text-white hover:bg-zinc-800 transition"
+                className="min-h-[44px] flex items-center gap-1.5 px-4 rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-medium text-zinc-300 hover:text-white hover:bg-zinc-800 transition active:scale-95 shadow-sm"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
+                <ChevronLeft className="w-4 h-4" />
                 <span>Back</span>
               </button>
             )}
 
             <button
               onClick={handleNext}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg font-semibold text-xs transition bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-600/30"
+              className="min-h-[44px] flex items-center gap-2 px-5 rounded-xl font-semibold text-xs transition bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg shadow-cyan-600/30 active:scale-95"
             >
               {isLast ? (
                 <>
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-4 h-4" />
                   <span>Get Started</span>
                 </>
               ) : (
                 <>
                   <span>Next</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-4 h-4" />
                 </>
               )}
             </button>

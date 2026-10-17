@@ -26,24 +26,26 @@ export const WavelengthBadge: React.FC<WavelengthBadgeProps> = ({ frame, classNa
 
   return (
     <div
-      className={`inline-flex flex-wrap items-center gap-2 rounded-lg bg-zinc-950/80 px-3 py-1.5 backdrop-blur-md border border-zinc-800 text-xs font-mono text-zinc-300 shadow-lg ${className}`}
+      role="status"
+      aria-label={`Observed on ${formattedDate}, wavelength ${frame.wavelength_um.toFixed(2)} micrometers, detector ${frame.detector}`}
+      className={`inline-flex flex-wrap items-center gap-2 rounded-lg bg-zinc-950/90 px-3 py-1.5 backdrop-blur-md border border-zinc-800 text-xs font-mono text-zinc-200 shadow-lg ${className}`}
     >
-      <div className="flex items-center gap-1.5 text-cyan-400">
-        <Calendar className="w-3.5 h-3.5" />
+      <div className="flex items-center gap-1.5 text-cyan-300">
+        <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
         <span>{formattedDate}</span>
       </div>
 
-      <span className="text-zinc-600">|</span>
+      <span className="text-zinc-400" aria-hidden="true">|</span>
 
-      <div className="flex items-center gap-1.5 text-amber-400">
-        <Radio className="w-3.5 h-3.5" />
+      <div className="flex items-center gap-1.5 text-amber-300">
+        <Radio className="w-3.5 h-3.5" aria-hidden="true" />
         <span>λ = {frame.wavelength_um.toFixed(2)} µm</span>
       </div>
 
-      <span className="text-zinc-600">|</span>
+      <span className="text-zinc-400" aria-hidden="true">|</span>
 
-      <div className="flex items-center gap-1.5 text-emerald-400">
-        <Cpu className="w-3.5 h-3.5" />
+      <div className="flex items-center gap-1.5 text-emerald-300">
+        <Cpu className="w-3.5 h-3.5" aria-hidden="true" />
         <span>Det {frame.detector}</span>
       </div>
     </div>
