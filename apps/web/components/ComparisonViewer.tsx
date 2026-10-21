@@ -466,6 +466,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
         {/* 3 Compare Modes: Blink | Side by side | Difference (All min-h-[44px]) */}
         <div role="tablist" aria-label="Comparison Modes" className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1 rounded-xl bg-zinc-900/90 p-1 border border-zinc-700 text-xs shadow-inner">
           <button
+            data-tour="blink-mode"
             role="tab"
             aria-selected={compareMode === 'blink'}
             onClick={() => setCompareMode('blink')}
@@ -494,6 +495,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
           </button>
 
           <button
+            data-tour="difference-mode"
             role="tab"
             aria-selected={compareMode === 'difference'}
             onClick={() => setCompareMode('difference')}

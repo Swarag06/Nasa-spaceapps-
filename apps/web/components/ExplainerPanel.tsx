@@ -20,7 +20,10 @@ export const ExplainerPanel: React.FC<ExplainerPanelProps> = ({
     : 'Look for objects that shift position between frames while background stars stay still, or use Blink mode to spot faint moving asteroids.';
 
   return (
-    <div className={`rounded-2xl border border-zinc-800/80 bg-zinc-950/85 backdrop-blur-xl shadow-xl overflow-hidden transition-all ${className}`}>
+    <div
+      data-tour="explainer-panel"
+      className={`rounded-2xl border border-zinc-800/80 bg-zinc-950/85 backdrop-blur-xl shadow-xl overflow-hidden transition-all ${className}`}
+    >
       {/* Collapsible Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}

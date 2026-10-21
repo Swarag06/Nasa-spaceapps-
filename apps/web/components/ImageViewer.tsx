@@ -174,6 +174,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
   return (
     <div
+      data-tour="image-viewer"
       className={`image-viewer-container relative w-full max-w-full flex flex-col items-center justify-center overflow-hidden rounded-none sm:rounded-2xl border-y sm:border border-zinc-800/80 bg-zinc-950/90 shadow-2xl backdrop-blur-xl ${className}`}
     >
       {/* Top Banner if Stacked View is active */}
@@ -216,6 +217,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
           {/* Stacked view button if stack is present */}
           {stack && (
             <button
+              data-tour="stacked-view"
               onClick={() => setIsStackedView(!isStackedView)}
               aria-pressed={isStackedView}
               aria-label={isStackedView ? "Switch back to single frames" : "Switch to stacked multi-epoch view"}

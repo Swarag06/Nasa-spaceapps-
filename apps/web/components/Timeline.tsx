@@ -110,6 +110,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
   return (
     <div
+      data-tour="timeline"
       role="region"
       aria-label="Epoch Timeline Controls. Use Arrow Left and Arrow Right keys to step frames."
       className="w-full max-w-full flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/90 p-3.5 sm:p-4 backdrop-blur-md shadow-xl overflow-x-hidden"
@@ -184,6 +185,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
           {/* Play / Pause Toggle (44px tall, wide thumb-friendly target) */}
           <button
+            data-tour="play-pause"
             onClick={onTogglePlay}
             disabled={totalFrames <= 1}
             aria-label={isPlaying ? 'Pause timeline playback (Space key)' : 'Play timeline animation (Space key)'}

@@ -81,7 +81,7 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
   const standaloneTargets = targets.filter((t) => !t.id.startsWith('3i-atlas-'));
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div data-tour="target-picker" className="flex flex-col gap-2.5">
       <div className="flex items-center justify-between text-xs font-semibold tracking-wider uppercase text-zinc-400">
         <span className="flex items-center gap-1.5">
           <Crosshair className="w-4 h-4 text-cyan-400" />

@@ -9,7 +9,7 @@ import { ImageViewer } from '../components/ImageViewer';
 import { Timeline } from '../components/Timeline';
 import { ComparisonViewer } from '../components/ComparisonViewer';
 import { ExplainerPanel } from '../components/ExplainerPanel';
-import { FirstVisitTour } from '../components/FirstVisitTour';
+import { GuidedTour, getHasSeenTour, setHasSeenTour } from '../components/GuidedTour';
 import {
   Telescope,
   Flame,
@@ -43,6 +43,25 @@ export function SkyExplorerContent() {
   const [isTourOpen, setIsTourOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // Automatically select target once loaded (prefer Comet 3I/ATLAS)
+  useEffect(() => {
+    if (targets.length > 0 && !selectedTargetId) {
+      const preferred = targets.find((t) => t.id === '3i-atlas-aug') || targets[0];
+      setSelectedTargetId(preferred.id);
+    }
+  }, [targets, selectedTargetId]);
+
+  // Reset frame index and stop playing when switching targets
+  useEffect(() => {
+    setCurrentFrameIndex(0);
+    setIsPlaying(false);
+  }, [selectedTargetId]);
+
+  const { data: framesData, isLoading: framesLoading, isError: framesError } = useFrames(selectedTargetId);
+
+  const frames = framesData?.frames || [];
+  const currentFrame = frames[currentFrameIndex] || null;
+
   // Respect system prefers-reduced-motion: never auto-play animations
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -72,41 +91,19 @@ export function SkyExplorerContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isDrawerOpen, isTourOpen]);
 
-  // Check first-visit tour status in sessionStorage
+  // Auto-start tour on first visit: waits until targets and the first image frame are loaded
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const tourSeen = sessionStorage.getItem('spherex_tour_seen');
-      if (!tourSeen) {
+    if (!targetsLoading && !framesLoading && currentFrame !== null && targets.length > 0) {
+      if (!getHasSeenTour()) {
         setIsTourOpen(true);
       }
     }
-  }, []);
+  }, [targetsLoading, framesLoading, currentFrame, targets.length]);
 
   const handleCloseTour = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem('spherex_tour_seen', 'true');
-    }
+    setHasSeenTour();
     setIsTourOpen(false);
   };
-
-  // Automatically select target once loaded (prefer Comet 3I/ATLAS)
-  useEffect(() => {
-    if (targets.length > 0 && !selectedTargetId) {
-      const preferred = targets.find((t) => t.id === '3i-atlas-aug') || targets[0];
-      setSelectedTargetId(preferred.id);
-    }
-  }, [targets, selectedTargetId]);
-
-  // Reset frame index and stop playing when switching targets
-  useEffect(() => {
-    setCurrentFrameIndex(0);
-    setIsPlaying(false);
-  }, [selectedTargetId]);
-
-  const { data: framesData, isLoading: framesLoading, isError: framesError } = useFrames(selectedTargetId);
-
-  const frames = framesData?.frames || [];
-  const currentFrame = frames[currentFrameIndex] || null;
 
   return (
     <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden w-full max-w-full">
@@ -149,10 +146,11 @@ export function SkyExplorerContent() {
 
             {/* Quick Tour Button */}
             <button
+              data-tour="tour-button"
               onClick={() => setIsTourOpen(true)}
-              aria-label="Open First-Visit Interactive Tour"
+              aria-label="Open Interactive Guided Tour"
               className="min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl border border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-xs text-zinc-200 hover:text-white transition font-medium shadow-sm active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-              title="Open First-Visit Interactive Tour"
+              title="Open Interactive Guided Tour"
             >
               <HelpCircle className="w-4 h-4 text-cyan-400" aria-hidden="true" />
               <span className="hidden sm:inline">Quick Tour</span>
@@ -177,6 +175,7 @@ export function SkyExplorerContent() {
 
               <button
                 role="tab"
+                data-tour="compare-tab"
                 aria-selected={activeMode === 'compare'}
                 aria-label="Switch to frame comparison view"
                 onClick={() => setActiveMode('compare')}
@@ -469,10 +468,15 @@ export function SkyExplorerContent() {
         </div>
       </nav>
 
-      {/* First-Visit Session Tour */}
-      <FirstVisitTour
+      {/* Interactive Guided Spotlight Tour */}
+      <GuidedTour
         isOpen={isTourOpen}
         onClose={handleCloseTour}
+        activeMode={activeMode}
+        setActiveMode={setActiveMode}
+        isDrawerOpen={isDrawerOpen}
+        setIsDrawerOpen={setIsDrawerOpen}
+        targetHasStack={Boolean(framesData?.stack || framesData?.tracking)}
       />
 
       {/* Footer */}

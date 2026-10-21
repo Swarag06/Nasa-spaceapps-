@@ -26,6 +26,7 @@ export const WavelengthBadge: React.FC<WavelengthBadgeProps> = ({ frame, classNa
 
   return (
     <div
+      data-tour="wavelength-badge"
       role="status"
       aria-label={`Observed on ${formattedDate}, wavelength ${frame.wavelength_um.toFixed(2)} micrometers, detector ${frame.detector}`}
       className={`inline-flex flex-wrap items-center gap-2 rounded-lg bg-zinc-950/90 px-3 py-1.5 backdrop-blur-md border border-zinc-800 text-xs font-mono text-zinc-200 shadow-lg ${className}`}
