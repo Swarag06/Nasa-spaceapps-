@@ -11,6 +11,7 @@ interface TargetPickerProps {
 
 type AtlasMonth = 'aug' | 'dec';
 type AtlasView = 'single' | 'stacked' | 'buildup';
+type VestaView = 'single' | 'stacked' | 'buildup';
 
 export const TargetPicker: React.FC<TargetPickerProps> = ({
   targets,
@@ -18,11 +19,14 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
   onSelect,
   isLoading = false,
 }) => {
-  // Month switch: 'aug' (August) or 'dec' (December)
+  // Month switch for 3I/ATLAS: 'aug' (August) or 'dec' (December)
   const [atlasMonth, setAtlasMonth] = useState<AtlasMonth>('aug');
 
-  // View switch: 'single' ("Single frames"), 'stacked' ("Stacked over days"), 'buildup' ("Build-up")
+  // View switch for 3I/ATLAS: 'single' ("Single frames"), 'stacked' ("Stacked over days"), 'buildup' ("Build-up")
   const [atlasView, setAtlasView] = useState<AtlasView>('single');
+
+  // View switch for Asteroid 4 Vesta: 'single' ("Single frames"), 'stacked' ("Stacked over days"), 'buildup' ("Build-up")
+  const [vestaView, setVestaView] = useState<VestaView>('single');
 
   // Synchronize month and view state if selectedId changes from outside
   useEffect(() => {
@@ -33,10 +37,15 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
 
       setAtlasMonth(isDec ? 'dec' : 'aug');
       setAtlasView(isStacked ? 'stacked' : isBuildup ? 'buildup' : 'single');
+    } else if (selectedId && selectedId.startsWith('vesta-')) {
+      const isStacked = selectedId.endsWith('-stacked');
+      const isBuildup = selectedId.endsWith('-buildup');
+
+      setVestaView(isStacked ? 'stacked' : isBuildup ? 'buildup' : 'single');
     }
   }, [selectedId]);
 
-  // Map month and view to corresponding folder ID: <name>, <name>-stacked, <name>-buildup
+  // Map month and view to corresponding Comet 3I/ATLAS folder ID
   const getAtlasTargetId = (month: AtlasMonth, view: AtlasView): string => {
     const baseName = `3i-atlas-${month}`;
     if (view === 'stacked') return `${baseName}-stacked`;
@@ -65,6 +74,34 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
     tracking: true,
   };
 
+  // Map view mode to corresponding Asteroid 4 Vesta folder ID
+  const getVestaTargetId = (view: VestaView): string => {
+    if (view === 'stacked') return 'vesta-2025-07-stacked';
+    if (view === 'buildup') return 'vesta-2025-07-buildup';
+    return 'vesta-2025-07';
+  };
+
+  const currentVestaId = getVestaTargetId(vestaView);
+  const isVestaSelected = Boolean(selectedId && selectedId.startsWith('vesta-'));
+
+  // Find active TargetSummary for the currently selected Asteroid 4 Vesta view
+  const currentVestaTarget = targets.find((t) => t.id === currentVestaId) || {
+    id: currentVestaId,
+    title: `Asteroid 4 Vesta (July 2025)${
+      vestaView === 'stacked' ? ' (stacked)' : vestaView === 'buildup' ? ' (build-up)' : ''
+    }`,
+    ra: 217.040,
+    dec: -8.002,
+    caption:
+      vestaView === 'stacked'
+        ? 'Co-added stacked image combining observations of Asteroid 4 Vesta across July 2025.'
+        : vestaView === 'buildup'
+        ? 'Progressive integration of frames showing Asteroid 4 Vesta emerging from the background.'
+        : 'Asteroid 4 Vesta tracked across July 2025 observation frames.',
+    frame_count: vestaView === 'stacked' ? 1 : vestaView === 'buildup' ? 7 : 38,
+    tracking: true,
+  };
+
   const handleMonthChange = (month: AtlasMonth) => {
     setAtlasMonth(month);
     const newId = getAtlasTargetId(month, atlasView);
@@ -77,8 +114,20 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
     onSelect(newId);
   };
 
-  // Filter out targets belonging to 3I/ATLAS group to list remaining standalone targets
-  const standaloneTargets = targets.filter((t) => !t.id.startsWith('3i-atlas-'));
+  const handleVestaViewChange = (view: VestaView) => {
+    setVestaView(view);
+    const newId = getVestaTargetId(view);
+    onSelect(newId);
+  };
+
+  // Filter out targets belonging to 3I/ATLAS and Vesta groups to list remaining standalone targets
+  const standaloneTargets = targets.filter(
+    (t) => !t.id.startsWith('3i-atlas-') && !t.id.startsWith('vesta-')
+  );
+
+  const hasAtlasGroup = targets.some((t) => t.id.startsWith('3i-atlas-')) || true;
+  const hasVestaGroup = targets.some((t) => t.id.startsWith('vesta-')) || true;
+  const totalCatalogObjects = (hasAtlasGroup ? 1 : 0) + (hasVestaGroup ? 1 : 0) + standaloneTargets.length;
 
   return (
     <div data-tour="target-picker" className="flex flex-col gap-2.5">
@@ -88,7 +137,7 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
           Target Catalog
         </span>
         <span className="text-[11px] text-zinc-500 font-mono">
-          2 Catalog Objects
+          {totalCatalogObjects} Catalog Objects
         </span>
       </div>
 
@@ -251,7 +300,134 @@ export const TargetPicker: React.FC<TargetPickerProps> = ({
             </div>
           </div>
 
-          {/* GROUP 2: Standalone Entries (e.g. "test-field") */}
+          {/* GROUP 2: Asteroid 4 Vesta with View Switch */}
+          <div
+            className={`group text-left p-3.5 rounded-xl border transition-all duration-150 flex flex-col gap-2.5 ${
+              isVestaSelected
+                ? 'border-cyan-500/80 bg-cyan-950/30 shadow-[0_0_20px_rgba(6,182,212,0.18)] ring-1 ring-cyan-500/40'
+                : 'border-zinc-800/80 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70'
+            }`}
+          >
+            {/* Accessible Header Button: Title + Tracking Badge + Frames */}
+            <button
+              type="button"
+              onClick={() => onSelect(currentVestaId)}
+              aria-pressed={isVestaSelected}
+              aria-label={`Select Asteroid 4 Vesta (${
+                vestaView === 'stacked' ? 'Stacked over days' : vestaView === 'buildup' ? 'Build-up' : 'Single frames'
+              })`}
+              className="w-full flex items-center justify-between text-left rounded-lg p-1 -m-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 min-h-[44px] cursor-pointer"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-400">
+                  <Orbit className="w-4 h-4" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className={`text-sm font-semibold tracking-tight ${isVestaSelected ? 'text-cyan-200' : 'text-zinc-100'}`}>
+                    Asteroid 4 Vesta
+                  </h3>
+                  <div className="text-[10px] font-mono text-zinc-300">
+                    Main-belt Asteroid &bull; Centre-tracked
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/90 border border-cyan-500/40 px-2 py-0.5 rounded-full font-semibold">
+                  Tracking
+                </span>
+                <div className="flex items-center gap-1 text-[11px] font-mono text-zinc-300 bg-zinc-800/80 px-2 py-0.5 rounded">
+                  <Layers className="w-3 h-3 text-cyan-400" aria-hidden="true" />
+                  <span>{currentVestaTarget.frame_count} frames</span>
+                </div>
+              </div>
+            </button>
+
+            {/* Epoch Display: July 2025 */}
+            <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-300 pt-1 border-t border-zinc-800/60">
+              <span className="flex items-center gap-1">
+                <Calendar className="w-3 h-3 text-cyan-400" aria-hidden="true" />
+                Epoch:
+              </span>
+              <span className="text-zinc-300 font-semibold bg-zinc-950/80 px-2 py-0.5 rounded border border-zinc-800">
+                July 2025
+              </span>
+            </div>
+
+            {/* View Switch: "Single frames", "Stacked over days", "Build-up" (All min-h-[44px]) */}
+            <div className="flex flex-col gap-1.5" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-300">
+                <span className="flex items-center gap-1">
+                  <Eye className="w-3 h-3 text-cyan-400" aria-hidden="true" />
+                  View Mode:
+                </span>
+                <span className="text-cyan-300 font-mono lowercase truncate max-w-[160px] font-semibold">
+                  {currentVestaId}
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-zinc-950/90 border border-zinc-800 text-[11px]" role="group" aria-label="Asteroid 4 Vesta Processing Mode">
+                <button
+                  type="button"
+                  onClick={() => handleVestaViewChange('single')}
+                  aria-pressed={vestaView === 'single'}
+                  aria-label="Single frames view for Asteroid 4 Vesta"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
+                    vestaView === 'single'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
+                  }`}
+                  title="Single frames"
+                >
+                  Single frames
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleVestaViewChange('stacked')}
+                  aria-pressed={vestaView === 'stacked'}
+                  aria-label="Stacked over days view for Asteroid 4 Vesta"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
+                    vestaView === 'stacked'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
+                  }`}
+                  title="Stacked over days"
+                >
+                  Stacked over days
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleVestaViewChange('buildup')}
+                  aria-pressed={vestaView === 'buildup'}
+                  aria-label="Build-up view for Asteroid 4 Vesta"
+                  className={`min-h-[44px] px-1 py-1 rounded-lg font-medium text-center flex items-center justify-center transition active:scale-95 leading-tight ${
+                    vestaView === 'buildup'
+                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30 font-semibold'
+                      : 'text-zinc-300 hover:text-white bg-zinc-900/60 hover:bg-zinc-800'
+                  }`}
+                  title="Build-up"
+                >
+                  Build-up
+                </button>
+              </div>
+            </div>
+
+            {/* Active Coordinates & Caption */}
+            <div className="pt-2 border-t border-zinc-800/60 flex flex-col gap-1">
+              <div className="flex items-center gap-2 text-xs font-mono text-zinc-300">
+                <Compass className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
+                <span>
+                  RA {currentVestaTarget.ra.toFixed(3)}&deg; &nbsp; Dec {currentVestaTarget.dec.toFixed(3)}&deg;
+                </span>
+              </div>
+              {currentVestaTarget.caption && (
+                <p className="text-[11px] text-zinc-300 line-clamp-2 leading-relaxed">
+                  {currentVestaTarget.caption}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* GROUP 3: Standalone Entries (e.g. "test-field") */}
           {standaloneTargets.map((target) => {
             const isSelected = target.id === selectedId;
             return (

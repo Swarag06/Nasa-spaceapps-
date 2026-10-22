@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Telescope, Radio, Flame, Sparkles, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
+import { Telescope, Radio, Flame, Sparkles, Download, X, ChevronRight, ChevronLeft, Check } from 'lucide-react';
 
 interface FirstVisitTourProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ const TOUR_STEPS: TourStep[] = [
     description:
       "You are looking at real infrared light captured by NASA's SPHEREx space telescope. SPHEREx maps the entire sky repeatedly, allowing us to uncover moving objects and dynamic changes across the cosmos.",
     icon: <Telescope className="w-6 h-6 text-cyan-400" />,
-    badge: 'Step 1 of 4',
+    badge: 'Step 1 of 5',
   },
   {
     title: 'Timeline & Infrared Wavelengths',
@@ -29,7 +29,15 @@ const TOUR_STEPS: TourStep[] = [
     description:
       "Use the timeline slider and Play button to step through observation dates. Notice the badge on each frame: each image is taken at a different wavelength (colour of infrared) from 0.75 to 5.0 µm.",
     icon: <Radio className="w-6 h-6 text-amber-400" />,
-    badge: 'Step 2 of 4',
+    badge: 'Step 2 of 5',
+  },
+  {
+    title: 'Download & Export Images',
+    subtitle: 'High-Resolution PNGs & Scientific Montages',
+    description:
+      'Save any observation frame, co-added comet stack, side-by-side comparison montage, or difference map directly to your device with clear astronomical metadata in filenames.',
+    icon: <Download className="w-6 h-6 text-cyan-400" />,
+    badge: 'Step 3 of 5',
   },
   {
     title: 'Compare & Blink Comparator',
@@ -37,7 +45,7 @@ const TOUR_STEPS: TourStep[] = [
     description:
       'Switch to the Compare tab! Alternate between two epochs with the Blink comparator, inspect them side-by-side with synced pan and zoom, or compute a Difference map (B − A) to reveal changes.',
     icon: <Flame className="w-6 h-6 text-emerald-400" />,
-    badge: 'Step 3 of 4',
+    badge: 'Step 4 of 5',
   },
   {
     title: 'What to Look For',
@@ -45,7 +53,7 @@ const TOUR_STEPS: TourStep[] = [
     description:
       'Distant stars stay fixed in place. Any point of light that shifts position between images is a moving object! Remember: brightness changes can be due to wavelength rather than physical changes in the object.',
     icon: <Sparkles className="w-6 h-6 text-indigo-400" />,
-    badge: 'Step 4 of 4',
+    badge: 'Step 5 of 5',
   },
 ];
 

@@ -147,6 +147,17 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
       },
     },
     {
+      id: 'download-button',
+      selector: '[data-tour="download-button"]',
+      title: 'Download images',
+      description:
+        'Save any observation frame or stacked view as a high-resolution PNG. You can also export side-by-side montages and difference maps in Compare mode.',
+      before: () => {
+        setIsDrawerOpen?.(false);
+        setActiveMode('single');
+      },
+    },
+    {
       id: 'compare-tab',
       selector: '[data-tour="compare-tab"]',
       title: 'Compare two images',

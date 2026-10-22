@@ -15,6 +15,9 @@ const FALLBACK_TARGET_IDS = [
   "3i-atlas-dec",
   "3i-atlas-dec-stacked",
   "3i-atlas-dec-buildup",
+  "vesta-2025-07",
+  "vesta-2025-07-stacked",
+  "vesta-2025-07-buildup",
 ];
 
 interface TargetsJsonResponse {
@@ -98,7 +101,7 @@ export async function fetchTargets(): Promise<TargetSummary[]> {
           ra: 0.0,
           dec: 0.0,
           caption: '',
-          tracking: id.includes('atlas') || id.includes('stacked') || id.includes('buildup'),
+          tracking: id.includes('atlas') || id.includes('vesta') || id.includes('stacked') || id.includes('buildup'),
           frame_count: 0,
         };
       }

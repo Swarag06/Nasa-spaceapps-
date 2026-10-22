@@ -17,7 +17,15 @@ import {
   Sliders,
   Palette,
   Sparkles,
+  Download,
+  Check,
 } from 'lucide-react';
+import {
+  downloadImageUrl,
+  downloadCanvas,
+  downloadSideBySideMontage,
+  sanitizeFilename,
+} from '../lib/download';
 
 interface ComparisonViewerProps {
   targetId: string;
@@ -440,6 +448,114 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
     }
   };
 
+  // Download states for each mode
+  const [downloadingSlot, setDownloadingSlot] = useState<string | null>(null);
+  const [downloadSuccessSlot, setDownloadSuccessSlot] = useState<string | null>(null);
+
+  const notifyDownloadSuccess = (slot: string) => {
+    setDownloadSuccessSlot(slot);
+    setTimeout(() => {
+      setDownloadSuccessSlot((prev) => (prev === slot ? null : prev));
+    }, 2200);
+  };
+
+  // Download active blink frame (Slot A or B)
+  const handleDownloadBlinkFrame = async () => {
+    const slot = activeSlot;
+    const f = slot === 'A' ? frameA : frameB;
+    if (!f || downloadingSlot) return;
+    setDownloadingSlot(`blink-${slot}`);
+    try {
+      const filename = sanitizeFilename([
+        'spherex',
+        targetId,
+        `epoch-${slot.toLowerCase()}`,
+        f.obs_id || f.time_utc?.slice(0, 10),
+        `${f.wavelength_um.toFixed(2)}um`,
+      ]);
+      await downloadImageUrl(getFrameImageUrl(targetId, f.file), filename);
+      notifyDownloadSuccess(`blink-${slot}`);
+    } catch (e) {
+      console.error('Download blink frame error:', e);
+    } finally {
+      setDownloadingSlot(null);
+    }
+  };
+
+  // Download individual frame A or B
+  const handleDownloadFrame = async (slot: 'A' | 'B') => {
+    const f = slot === 'A' ? frameA : frameB;
+    if (!f || downloadingSlot) return;
+    setDownloadingSlot(slot);
+    try {
+      const filename = sanitizeFilename([
+        'spherex',
+        targetId,
+        `epoch-${slot.toLowerCase()}`,
+        f.obs_id || f.time_utc?.slice(0, 10),
+        `${f.wavelength_um.toFixed(2)}um`,
+      ]);
+      await downloadImageUrl(getFrameImageUrl(targetId, f.file), filename);
+      notifyDownloadSuccess(slot);
+    } catch (e) {
+      console.error('Download frame error:', e);
+    } finally {
+      setDownloadingSlot(null);
+    }
+  };
+
+  // Download Side-by-Side Dual Montage
+  const handleDownloadSideBySide = async () => {
+    if (!frameA || !frameB || downloadingSlot) return;
+    setDownloadingSlot('side-by-side');
+    try {
+      const filename = sanitizeFilename([
+        'spherex',
+        targetId,
+        'comparison',
+        'epoch-a-and-b',
+        `${frameA.wavelength_um.toFixed(2)}um-vs-${frameB.wavelength_um.toFixed(2)}um`,
+      ]);
+      await downloadSideBySideMontage({
+        imgAUrl: getFrameImageUrl(targetId, frameA.file),
+        imgBUrl: getFrameImageUrl(targetId, frameB.file),
+        targetTitle: targetTitle || targetId,
+        labelA: formatDateLabel(frameA),
+        metaA: `Obs ${frameA.obs_id} • λ = ${frameA.wavelength_um.toFixed(2)} µm`,
+        labelB: formatDateLabel(frameB),
+        metaB: `Obs ${frameB.obs_id} • λ = ${frameB.wavelength_um.toFixed(2)} µm`,
+        filename,
+      });
+      notifyDownloadSuccess('side-by-side');
+    } catch (e) {
+      console.error('Download side-by-side montage error:', e);
+    } finally {
+      setDownloadingSlot(null);
+    }
+  };
+
+  // Download Difference Canvas
+  const handleDownloadDiffCanvas = async () => {
+    if (!canvasRef.current || downloadingSlot) return;
+    setDownloadingSlot('diff');
+    try {
+      const filename = sanitizeFilename([
+        'spherex',
+        targetId,
+        'difference',
+        'b-minus-a',
+        `${frameB.obs_id}-minus-${frameA.obs_id}`,
+        `${diffColorMode}`,
+      ]);
+      await downloadCanvas(canvasRef.current, filename);
+      notifyDownloadSuccess('diff');
+    } catch (e) {
+      console.error('Download difference canvas error:', e);
+    } finally {
+      setDownloadingSlot(null);
+    }
+  };
+
   return (
     <div
       className={`comparison-container flex flex-col gap-4 rounded-none sm:rounded-2xl border-y sm:border border-zinc-800/80 bg-zinc-950/90 p-3 sm:p-5 backdrop-blur-xl shadow-2xl ${className}`}
@@ -612,7 +728,11 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
               <button
                 onClick={() => setShowCometPosition(!showCometPosition)}
                 aria-pressed={showCometPosition}
-                aria-label={showCometPosition ? "Hide predicted comet position ring" : "Show predicted comet position ring"}
+                aria-label={
+                  showCometPosition
+                    ? `Hide predicted ${targetTitle?.toLowerCase().includes('vesta') ? 'asteroid' : 'comet'} position ring`
+                    : `Show predicted ${targetTitle?.toLowerCase().includes('vesta') ? 'asteroid' : 'comet'} position ring`
+                }
                 className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-mono transition backdrop-blur-md active:scale-95 ${
                   showCometPosition
                     ? 'bg-cyan-950/90 border-cyan-500/70 text-cyan-200 ring-1 ring-cyan-500/30'
@@ -630,6 +750,31 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
               title="Manually switch between Frame A and Frame B (Arrow Left/Right)"
             >
               Toggle A / B
+            </button>
+
+            <button
+              onClick={handleDownloadBlinkFrame}
+              disabled={Boolean(downloadingSlot)}
+              aria-label={`Download currently visible frame (Slot ${activeSlot}) as PNG`}
+              title={`Download Slot ${activeSlot} Frame (PNG)`}
+              className="min-h-[44px] px-3 py-2 rounded-xl border border-zinc-700 bg-zinc-950/90 backdrop-blur-md text-xs font-mono text-zinc-200 hover:text-white hover:bg-zinc-900 active:scale-95 transition shadow-sm flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              {downloadSuccessSlot === `blink-${activeSlot}` ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                  <span className="text-emerald-300">Saved</span>
+                </>
+              ) : downloadingSlot === `blink-${activeSlot}` ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                  <span className="text-cyan-300">Saving...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+                  <span className="hidden xs:inline">Save Slot {activeSlot}</span>
+                </>
+              )}
             </button>
           </div>
 
@@ -673,8 +818,16 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                   }}
-                  title="Predicted comet position"
-                  aria-label="Predicted comet position"
+                  title={
+                    targetTitle?.toLowerCase().includes('vesta')
+                      ? 'Predicted asteroid position'
+                      : 'Predicted comet position'
+                  }
+                  aria-label={
+                    targetTitle?.toLowerCase().includes('vesta')
+                      ? 'Predicted asteroid position'
+                      : 'Predicted comet position'
+                  }
                 >
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-1 h-1 rounded-full bg-cyan-300" />
@@ -827,6 +980,33 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
               >
                 <Crosshair className="w-4 h-4" aria-hidden="true" />
               </button>
+
+              {/* Side-by-Side Dual Montage Export Button */}
+              <button
+                type="button"
+                onClick={handleDownloadSideBySide}
+                disabled={Boolean(downloadingSlot)}
+                aria-label="Download combined side-by-side comparison montage image (Epoch A and Epoch B with metadata)"
+                title="Download Dual Comparison Montage (PNG)"
+                className="min-h-[44px] px-3.5 py-2 rounded-xl border border-cyan-500/50 bg-cyan-950/70 hover:bg-cyan-900/80 text-cyan-200 hover:text-white active:scale-95 transition font-semibold text-xs flex items-center gap-1.5 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              >
+                {downloadSuccessSlot === 'side-by-side' ? (
+                  <>
+                    <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                    <span className="text-emerald-300">Montage Saved</span>
+                  </>
+                ) : downloadingSlot === 'side-by-side' ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                    <span className="text-cyan-300">Exporting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+                    <span>Export Montage (A+B)</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
@@ -899,9 +1079,36 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 </div>
               </div>
 
-              <div className="px-3 py-1.5 border-t border-zinc-900 bg-zinc-950/80 flex items-center justify-between text-[11px] font-mono text-zinc-300">
-                <span>{frameA.obs_id}</span>
-                <span>λ = {frameA.wavelength_um.toFixed(2)} µm</span>
+              <div className="px-3 py-2 border-t border-zinc-900 bg-zinc-950/80 flex items-center justify-between text-[11px] font-mono text-zinc-300">
+                <div className="flex items-center gap-2">
+                  <span>{frameA.obs_id}</span>
+                  <span>λ = {frameA.wavelength_um.toFixed(2)} µm</span>
+                </div>
+
+                <button
+                  onClick={() => handleDownloadFrame('A')}
+                  disabled={Boolean(downloadingSlot)}
+                  aria-label="Download Epoch A observation frame"
+                  title="Download Epoch A (PNG)"
+                  className="min-h-[44px] px-2.5 py-1 rounded-lg border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white flex items-center gap-1.5 transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                >
+                  {downloadSuccessSlot === 'A' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+                      <span className="text-[10px] text-emerald-300">Saved</span>
+                    </>
+                  ) : downloadingSlot === 'A' ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                      <span className="text-[10px] text-cyan-300">Saving</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-3.5 h-3.5 text-cyan-300" aria-hidden="true" />
+                      <span>Save Frame A</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 
@@ -965,9 +1172,36 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 </div>
               </div>
 
-              <div className="px-3 py-1.5 border-t border-zinc-900 bg-zinc-950/80 flex items-center justify-between text-[11px] font-mono text-zinc-300">
-                <span>{frameB.obs_id}</span>
-                <span>λ = {frameB.wavelength_um.toFixed(2)} µm</span>
+              <div className="px-3 py-2 border-t border-zinc-900 bg-zinc-950/80 flex items-center justify-between text-[11px] font-mono text-zinc-300">
+                <div className="flex items-center gap-2">
+                  <span>{frameB.obs_id}</span>
+                  <span>λ = {frameB.wavelength_um.toFixed(2)} µm</span>
+                </div>
+
+                <button
+                  onClick={() => handleDownloadFrame('B')}
+                  disabled={Boolean(downloadingSlot)}
+                  aria-label="Download Epoch B observation frame"
+                  title="Download Epoch B (PNG)"
+                  className="min-h-[44px] px-2.5 py-1 rounded-lg border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white flex items-center gap-1.5 transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                >
+                  {downloadSuccessSlot === 'B' ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+                      <span className="text-[10px] text-emerald-300">Saved</span>
+                    </>
+                  ) : downloadingSlot === 'B' ? (
+                    <>
+                      <div className="w-3 h-3 border-2 border-amber-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                      <span className="text-[10px] text-amber-300">Saving</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-3.5 h-3.5 text-amber-300" aria-hidden="true" />
+                      <span>Save Frame B</span>
+                    </>
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -1036,11 +1270,38 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 ))}
               </div>
             </div>
+
+            {/* Download Difference Map Button */}
+            <button
+              type="button"
+              onClick={handleDownloadDiffCanvas}
+              disabled={Boolean(downloadingSlot) || diffLoading || Boolean(diffError)}
+              aria-label="Download pixel difference map as PNG image"
+              title="Download Difference Map (PNG)"
+              className="min-h-[44px] px-3.5 py-2 rounded-xl border border-cyan-500/50 bg-cyan-950/80 hover:bg-cyan-900/90 text-cyan-200 hover:text-white active:scale-95 transition font-semibold text-xs flex items-center gap-1.5 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            >
+              {downloadSuccessSlot === 'diff' ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                  <span className="text-emerald-300">Diff Map Saved</span>
+                </>
+              ) : downloadingSlot === 'diff' ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                  <span className="text-cyan-300">Saving Map...</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+                  <span>Download Difference Map</span>
+                </>
+              )}
+            </button>
           </div>
 
           {/* Main Difference Canvas Container */}
           <div className="relative flex flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-black overflow-hidden shadow-2xl p-2 select-none min-h-[460px]">
-            {/* Requirement 3: Show date and wavelength of both images */}
+            {/* Requirement 3: Show date and wavelength of both images & quick download */}
             <div className="absolute top-3 left-3 z-20 flex flex-col sm:flex-row items-start sm:items-center gap-2">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-950/90 border border-zinc-700 text-xs font-mono backdrop-blur-md shadow-lg">
                 <span className="text-amber-300 font-bold">B</span>
@@ -1049,6 +1310,30 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 <span className="text-cyan-300 font-bold">A</span>
                 <span className="text-zinc-300">({formatDateLabel(frameA)}, {frameA.wavelength_um.toFixed(2)}µm)</span>
               </div>
+            </div>
+
+            {/* Quick Canvas Download Button in Top-Right */}
+            <div className="absolute top-3 right-3 z-20">
+              <button
+                type="button"
+                onClick={handleDownloadDiffCanvas}
+                disabled={Boolean(downloadingSlot) || diffLoading || Boolean(diffError)}
+                aria-label="Download this difference map"
+                title="Download Difference Map (PNG)"
+                className="min-h-[44px] px-3 py-1.5 rounded-xl border border-zinc-700 bg-zinc-950/90 backdrop-blur-md text-xs font-mono text-zinc-200 hover:text-white hover:bg-zinc-900 active:scale-95 transition shadow-sm flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              >
+                {downloadSuccessSlot === 'diff' ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+                    <span className="text-emerald-300">Saved</span>
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-3.5 h-3.5 text-cyan-300" aria-hidden="true" />
+                    <span className="hidden sm:inline">Save Map</span>
+                  </>
+                )}
+              </button>
             </div>
 
             {/* Loading / Error states */}

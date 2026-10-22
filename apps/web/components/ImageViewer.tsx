@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FrameItem } from '../lib/types';
 import { getFrameImageUrl } from '../lib/api';
 import { WavelengthBadge } from './WavelengthBadge';
-import { Crosshair, ZoomIn, ZoomOut, AlertCircle, Layers, Target, Info, Sparkles, RotateCcw } from 'lucide-react';
+import { Crosshair, ZoomIn, ZoomOut, AlertCircle, Layers, Target, Info, Sparkles, RotateCcw, Download, Check } from 'lucide-react';
+import { downloadImageUrl, sanitizeFilename } from '../lib/download';
 
 interface ImageViewerProps {
   targetId: string;
@@ -167,9 +168,32 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
     setIsMouseDragging(false);
   };
 
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [hasDownloaded, setHasDownloaded] = useState(false);
+
   const resetZoomPan = () => {
     setZoom(1.0);
     setPan({ x: 0, y: 0 });
+  };
+
+  const handleDownload = async () => {
+    if (!currentImageFile || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      const filename = sanitizeFilename([
+        'spherex',
+        targetId,
+        isStackedView ? 'stack' : (frame?.obs_id || frame?.time_utc?.slice(0, 10)),
+        frame?.wavelength_um ? `${frame.wavelength_um.toFixed(2)}um` : undefined,
+      ]);
+      await downloadImageUrl(imgSrc, filename);
+      setHasDownloaded(true);
+      setTimeout(() => setHasDownloaded(false), 2200);
+    } catch (err) {
+      console.error('Download error:', err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -232,12 +256,16 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
             </button>
           )}
 
-          {/* Toggle "Show predicted comet position" for tracking targets */}
+          {/* Toggle "Show predicted target position" for tracking targets */}
           {tracking && (
             <button
               onClick={() => setShowCometPosition(!showCometPosition)}
               aria-pressed={showCometPosition}
-              aria-label={showCometPosition ? "Hide predicted comet position ring" : "Show predicted comet position ring"}
+              aria-label={
+                showCometPosition
+                  ? `Hide predicted ${targetTitle?.toLowerCase().includes('vesta') ? 'asteroid' : 'comet'} position ring`
+                  : `Show predicted ${targetTitle?.toLowerCase().includes('vesta') ? 'asteroid' : 'comet'} position ring`
+              }
               className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-medium transition shadow-sm flex items-center gap-1.5 active:scale-95 ${
                 showCometPosition
                   ? 'bg-cyan-950/90 border-cyan-500/70 text-cyan-200 ring-1 ring-cyan-500/30'
@@ -245,7 +273,13 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               }`}
             >
               <Target className="w-4 h-4 text-cyan-300" aria-hidden="true" />
-              <span className="hidden sm:inline">Comet position</span>
+              <span className="hidden sm:inline">
+                {targetTitle?.toLowerCase().includes('vesta')
+                  ? 'Vesta position'
+                  : targetTitle?.toLowerCase().includes('comet')
+                  ? 'Comet position'
+                  : 'Target position'}
+              </span>
               <span className="sm:hidden">Ring: {showCometPosition ? 'ON' : 'OFF'}</span>
             </button>
           )}
@@ -297,6 +331,37 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               </button>
             )}
           </div>
+
+          {/* Download Button: min-h-[44px] touch target */}
+          <button
+            data-tour="download-button"
+            onClick={handleDownload}
+            disabled={isDownloading || !currentImageFile}
+            aria-label={
+              isStackedView
+                ? 'Download co-added stacked infrared image'
+                : `Download observation frame ${frame?.obs_id || 'image'}`
+            }
+            title={isStackedView ? 'Download Stacked Image' : 'Download Frame (PNG)'}
+            className="min-h-[44px] min-w-[44px] px-3 flex items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white disabled:opacity-40 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+          >
+            {hasDownloaded ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
+                <span className="text-xs font-mono text-emerald-300">Saved</span>
+              </>
+            ) : isDownloading ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                <span className="text-xs font-mono text-cyan-300">Saving</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+                <span className="hidden sm:inline text-xs font-medium">Download</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -368,8 +433,16 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                 }}
-                title="Predicted comet position"
-                aria-label="Predicted comet position"
+                title={
+                  targetTitle?.toLowerCase().includes('vesta')
+                    ? 'Predicted asteroid position'
+                    : 'Predicted comet position'
+                }
+                aria-label={
+                  targetTitle?.toLowerCase().includes('vesta')
+                    ? 'Predicted asteroid position'
+                    : 'Predicted comet position'
+                }
               >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-1.5 h-1.5 rounded-full bg-cyan-300" />
