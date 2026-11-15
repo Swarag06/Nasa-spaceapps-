@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useTargets } from '../hooks/useTargets';
 import { useFrames } from '../hooks/useFrames';
+import { ThemeProvider } from '../hooks/useTheme';
+import { ThemeToggle } from '../components/ThemeToggle';
 import { TargetPicker } from '../components/TargetPicker';
 import { ImageViewer } from '../components/ImageViewer';
 import { Timeline } from '../components/Timeline';
@@ -106,9 +108,9 @@ export function SkyExplorerContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-zinc-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200 overflow-x-hidden w-full max-w-full">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-zinc-100 flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-800 dark:selection:text-cyan-200 overflow-x-hidden w-full max-w-full transition-colors duration-200">
       {/* Top Navigation Bar */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/85 backdrop-blur-md sticky top-0 z-30 overflow-x-hidden">
+      <header className="border-b border-slate-200 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/85 backdrop-blur-md sticky top-0 z-30 overflow-x-hidden transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2.5">
           <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-white/20 shrink-0">
@@ -116,29 +118,29 @@ export function SkyExplorerContent() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold tracking-tight text-white truncate max-w-[190px] sm:max-w-none">
+                <h1 className="text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white truncate max-w-[190px] sm:max-w-none">
                   SPHEREx Sky Explorer
                 </h1>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 font-semibold shrink-0">
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-cyan-50 border border-cyan-300 text-cyan-800 dark:bg-cyan-950 dark:border-cyan-500/40 dark:text-cyan-300 font-semibold shrink-0">
                   Space Apps 2026
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-zinc-300 hidden xs:block">
+              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-zinc-300 hidden xs:block">
                 All-sky infrared time series &amp; Planet X hunting
               </p>
             </div>
           </div>
 
-          {/* Header Controls: Drawer Menu Button (<900px), Tour Button + Mode Switcher Tabs */}
+          {/* Header Controls: Drawer Menu Button (<900px), Tour Button + Mode Switcher Tabs + Theme Toggle */}
           <div className="flex items-center gap-2">
             {/* Menu Button for Slide-Up Drawer (<900px) */}
             <button
               onClick={() => setIsDrawerOpen(true)}
               aria-label="Open Target Catalog Drawer"
-              className="mobile-drawer-trigger min-h-[44px] items-center gap-1.5 px-3 py-2 rounded-xl border border-cyan-500/50 bg-cyan-950/70 hover:bg-cyan-900/80 text-xs text-cyan-200 transition font-medium shadow-sm active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              className="mobile-drawer-trigger min-h-[44px] items-center gap-1.5 px-3 py-2 rounded-xl border border-cyan-400 bg-cyan-50 hover:bg-cyan-100 text-xs text-cyan-900 dark:border-cyan-500/50 dark:bg-cyan-950/70 dark:hover:bg-cyan-900/80 dark:text-cyan-200 transition font-medium shadow-sm active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               title="Open Target Catalog Drawer"
             >
-              <Compass className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
+              <Compass className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" aria-hidden="true" />
               <span className="truncate max-w-[120px] font-mono">
                 {framesData?.target || selectedTargetId || 'Targets'}
               </span>
@@ -149,15 +151,15 @@ export function SkyExplorerContent() {
               data-tour="tour-button"
               onClick={() => setIsTourOpen(true)}
               aria-label="Open Interactive Guided Tour"
-              className="min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl border border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-xs text-zinc-200 hover:text-white transition font-medium shadow-sm active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+              className="min-h-[44px] flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900/80 dark:hover:bg-zinc-800 text-xs text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white transition font-medium shadow-sm active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               title="Open Interactive Guided Tour"
             >
-              <HelpCircle className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+              <HelpCircle className="w-4 h-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
               <span className="hidden sm:inline">Quick Tour</span>
             </button>
 
             {/* Mode Switcher Tabs (All buttons min-h-[44px]) */}
-            <div role="tablist" aria-label="Explorer View Modes" className="flex items-center gap-1 bg-zinc-900/90 border border-zinc-700 rounded-xl p-1 text-xs">
+            <div role="tablist" aria-label="Explorer View Modes" className="flex items-center gap-1 bg-slate-100 dark:bg-zinc-900/90 border border-slate-300 dark:border-zinc-700 rounded-xl p-1 text-xs">
               <button
                 role="tab"
                 aria-selected={activeMode === 'single'}
@@ -165,8 +167,8 @@ export function SkyExplorerContent() {
                 onClick={() => setActiveMode('single')}
                 className={`min-h-[44px] flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg font-medium transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                   activeMode === 'single'
-                    ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/40 shadow-sm font-semibold'
-                    : 'text-zinc-300 hover:text-white'
+                    ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm font-semibold dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/40'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
                 }`}
               >
                 <Eye className="w-4 h-4" aria-hidden="true" />
@@ -181,14 +183,17 @@ export function SkyExplorerContent() {
                 onClick={() => setActiveMode('compare')}
                 className={`min-h-[44px] flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-lg font-medium transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                   activeMode === 'compare'
-                    ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/40 shadow-sm font-semibold'
-                    : 'text-zinc-300 hover:text-white'
+                    ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm font-semibold dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/40'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
                 }`}
               >
                 <Flame className="w-4 h-4" aria-hidden="true" />
                 <span>Compare</span>
               </button>
             </div>
+
+            {/* Dark / Light Mode Toggle */}
+            <ThemeToggle showLabel={false} />
           </div>
         </div>
       </header>
@@ -218,7 +223,7 @@ export function SkyExplorerContent() {
         <div className="desktop-layout-grid w-full max-w-full">
           {/* Desktop Left Column: Persistent Sidebar (Unchanged on >=900px, hidden on <900px) */}
           <aside aria-label="Target Catalog Sidebar" className="desktop-sidebar flex flex-col gap-5">
-            <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-4 backdrop-blur-md shadow-xl flex flex-col gap-4">
+            <div className="rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/60 p-4 backdrop-blur-md shadow-lg dark:shadow-xl flex flex-col gap-4 transition-colors">
               <TargetPicker
                 targets={targets}
                 selectedId={selectedTargetId}
@@ -229,26 +234,26 @@ export function SkyExplorerContent() {
 
             {/* Target Information Card */}
             {framesData && (
-              <div className="rounded-2xl border border-zinc-800/80 bg-zinc-950/60 p-4 backdrop-blur-md shadow-xl flex flex-col gap-2.5">
-                <div className="flex items-center justify-between border-b border-zinc-800/60 pb-2">
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Target Metadata</h2>
-                  <span className="font-mono text-[11px] text-cyan-400 font-semibold">{framesData.target}</span>
+              <div className="rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/60 p-4 backdrop-blur-md shadow-lg dark:shadow-xl flex flex-col gap-2.5 transition-colors">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800/60 pb-2">
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-400">Target Metadata</h2>
+                  <span className="font-mono text-[11px] text-cyan-600 dark:text-cyan-400 font-semibold">{framesData.target}</span>
                 </div>
 
                 <div className="flex flex-col gap-1.5 text-xs">
-                  <div className="text-sm font-semibold text-zinc-200">{framesData.title}</div>
-                  <div className="font-mono text-zinc-400 text-[11px]">
-                    RA: <span className="text-zinc-300">{framesData.ra.toFixed(4)}°</span> &nbsp;|&nbsp; Dec:{' '}
-                    <span className="text-zinc-300">{framesData.dec.toFixed(4)}°</span>
+                  <div className="text-sm font-semibold text-slate-900 dark:text-zinc-200">{framesData.title}</div>
+                  <div className="font-mono text-slate-500 dark:text-zinc-400 text-[11px]">
+                    RA: <span className="text-slate-700 dark:text-zinc-300">{framesData.ra.toFixed(4)}°</span> &nbsp;|&nbsp; Dec:{' '}
+                    <span className="text-slate-700 dark:text-zinc-300">{framesData.dec.toFixed(4)}°</span>
                   </div>
                   {framesData.caption && (
-                    <p className="text-xs text-zinc-400 pt-1 leading-relaxed">{framesData.caption}</p>
+                    <p className="text-xs text-slate-600 dark:text-zinc-400 pt-1 leading-relaxed">{framesData.caption}</p>
                   )}
                 </div>
 
-                <div className="mt-2 pt-2 border-t border-zinc-900 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-zinc-900 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-zinc-500">
                   <div className="flex items-center gap-1">
-                    <Layers className="w-3 h-3 text-cyan-400" />
+                    <Layers className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
                     <span>{frames.length} Infrared Epochs</span>
                   </div>
                   <span>0.75 - 5.0 µm</span>
@@ -260,12 +265,12 @@ export function SkyExplorerContent() {
           {/* Right Column / Mobile Top: Interactive Visualizer & Controls */}
           <section aria-label="Visualizer and Controls" className="desktop-main-col w-full flex flex-col gap-4 sm:gap-5">
             {framesLoading ? (
-              <div className="min-h-[460px] flex flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950/60 text-zinc-300 text-xs gap-3">
+              <div className="min-h-[460px] flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/60 text-slate-600 dark:text-zinc-300 text-xs gap-3">
                 <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
                 <span>Loading SPHEREx frame sequence...</span>
               </div>
             ) : framesError || !selectedTargetId ? (
-              <div className="min-h-[460px] flex flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950/60 text-zinc-300 text-xs p-6 text-center">
+              <div className="min-h-[460px] flex flex-col items-center justify-center rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/60 text-slate-600 dark:text-zinc-300 text-xs p-6 text-center">
                 <span>Select a target from the catalog to inspect infrared frames.</span>
               </div>
             ) : activeMode === 'single' ? (
@@ -329,26 +334,32 @@ export function SkyExplorerContent() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="drawer-title"
-            className="relative w-full max-w-lg max-h-[85vh] bg-zinc-950 border-t border-zinc-700/80 rounded-t-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-4 overflow-y-auto z-50"
+            className="relative w-full max-w-lg max-h-[85vh] bg-white dark:bg-zinc-950 border-t border-slate-200 dark:border-zinc-700/80 rounded-t-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-4 overflow-y-auto z-50 text-slate-900 dark:text-zinc-100 transition-colors"
           >
             {/* Grab handle indicator */}
-            <div className="w-12 h-1.5 bg-zinc-700 rounded-full mx-auto shrink-0 -mt-1 mb-0.5" aria-hidden="true" />
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-zinc-700 rounded-full mx-auto shrink-0 -mt-1 mb-0.5" aria-hidden="true" />
 
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-2 shrink-0">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-2 shrink-0">
               <div className="flex items-center gap-2">
-                <Compass className="w-5 h-5 text-cyan-400" aria-hidden="true" />
-                <h2 id="drawer-title" className="text-sm font-bold text-white tracking-wide">
+                <Compass className="w-5 h-5 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
+                <h2 id="drawer-title" className="text-sm font-bold text-slate-900 dark:text-white tracking-wide">
                   SPHEREx Target Catalog
                 </h2>
               </div>
               <button
                 onClick={() => setIsDrawerOpen(false)}
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-zinc-300 hover:text-white hover:bg-zinc-900 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-900 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 aria-label="Close targets drawer"
               >
                 <X className="w-5 h-5" aria-hidden="true" />
               </button>
+            </div>
+
+            {/* Mobile Theme Appearance Toggle */}
+            <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-900/60">
+              <span className="text-xs font-medium text-slate-700 dark:text-zinc-300">Theme Appearance</span>
+              <ThemeToggle showLabel />
             </div>
 
             {/* Target Catalog & Metadata inside Drawer */}
@@ -364,18 +375,18 @@ export function SkyExplorerContent() {
               />
 
               {framesData && (
-                <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3.5 backdrop-blur-md shadow-xl flex flex-col gap-2">
-                  <div className="flex items-center justify-between border-b border-zinc-800/60 pb-1.5">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">Target Metadata</h3>
-                    <span className="font-mono text-[11px] text-cyan-300 font-semibold">{framesData.target}</span>
+                <div className="rounded-2xl border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-zinc-900/60 p-3.5 backdrop-blur-md shadow-lg dark:shadow-xl flex flex-col gap-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800/60 pb-1.5">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300">Target Metadata</h3>
+                    <span className="font-mono text-[11px] text-cyan-600 dark:text-cyan-300 font-semibold">{framesData.target}</span>
                   </div>
-                  <div className="text-xs text-zinc-300">
-                    <div className="text-sm font-semibold text-zinc-100">{framesData.title}</div>
-                    <div className="font-mono text-zinc-300 text-[11px] pt-0.5">
+                  <div className="text-xs text-slate-700 dark:text-zinc-300">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-zinc-100">{framesData.title}</div>
+                    <div className="font-mono text-slate-500 dark:text-zinc-300 text-[11px] pt-0.5">
                       RA: {framesData.ra.toFixed(4)}° &nbsp;|&nbsp; Dec: {framesData.dec.toFixed(4)}°
                     </div>
                     {framesData.caption && (
-                      <p className="text-xs text-zinc-300 pt-1 leading-relaxed">{framesData.caption}</p>
+                      <p className="text-xs text-slate-600 dark:text-zinc-300 pt-1 leading-relaxed">{framesData.caption}</p>
                     )}
                   </div>
                 </div>
@@ -388,7 +399,7 @@ export function SkyExplorerContent() {
       {/* Mobile Sticky Bottom Controls Bar (<900px, hidden on desktop >=900px via CSS) */}
       <nav
         aria-label="Mobile Navigation and Controls"
-        className="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/90 px-3 py-2 pb-safe shadow-[0_-5px_25px_rgba(0,0,0,0.8)]"
+        className="mobile-bottom-bar fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl border-t border-slate-200 dark:border-zinc-800/90 px-3 py-2 pb-safe shadow-[0_-5px_25px_rgba(0,0,0,0.06)] dark:shadow-[0_-5px_25px_rgba(0,0,0,0.8)] transition-colors"
       >
         <div className="max-w-md mx-auto grid grid-cols-4 gap-1.5 items-center w-full">
           {/* 1. Target Drawer Menu Button */}
@@ -397,12 +408,12 @@ export function SkyExplorerContent() {
             aria-label="Open Target Catalog Drawer"
             className={`min-h-[44px] flex flex-col items-center justify-center gap-0.5 rounded-xl border text-[10px] font-medium transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
               isDrawerOpen
-                ? 'bg-cyan-950 text-cyan-200 border-cyan-500/60 shadow-sm'
-                : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:text-white'
+                ? 'bg-cyan-100 text-cyan-900 border-cyan-400 dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 shadow-sm'
+                : 'bg-slate-100 dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
             }`}
             title="Open Target Catalog Drawer"
           >
-            <Compass className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+            <Compass className="w-4 h-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
             <span className="truncate max-w-[70px]">Targets</span>
           </button>
 
@@ -413,8 +424,8 @@ export function SkyExplorerContent() {
             aria-label={isPlaying ? 'Pause timeline playback' : 'Start timeline playback'}
             className={`min-h-[44px] flex flex-col items-center justify-center gap-0.5 rounded-xl border text-[10px] font-semibold transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
               isPlaying
-                ? 'bg-amber-950/90 text-amber-200 border-amber-500/60 shadow-md'
-                : 'bg-cyan-950/90 text-cyan-200 border-cyan-500/60 shadow-sm'
+                ? 'bg-amber-100 text-amber-900 border-amber-400 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-500/60 shadow-md'
+                : 'bg-cyan-100 text-cyan-900 border-cyan-400 dark:bg-cyan-950/90 dark:text-cyan-200 dark:border-cyan-500/60 shadow-sm'
             } disabled:opacity-40 disabled:cursor-not-allowed`}
             title={isPlaying ? 'Pause timeline playback' : 'Start timeline playback'}
           >
@@ -437,19 +448,19 @@ export function SkyExplorerContent() {
             aria-label={activeMode === 'single' ? 'Switch to compare view' : 'Switch to timeline view'}
             className={`min-h-[44px] flex flex-col items-center justify-center gap-0.5 rounded-xl border text-[10px] font-medium transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
               activeMode === 'compare'
-                ? 'bg-cyan-950 text-cyan-200 border-cyan-500/60 shadow-sm'
-                : 'bg-zinc-900/80 border-zinc-800 text-zinc-200'
+                ? 'bg-cyan-100 text-cyan-900 border-cyan-400 dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 shadow-sm'
+                : 'bg-slate-100 dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-200'
             }`}
             title="Toggle between single timeline and comparison modes"
           >
             {activeMode === 'single' ? (
               <>
-                <Flame className="w-4 h-4 text-amber-400" aria-hidden="true" />
+                <Flame className="w-4 h-4 text-amber-500 dark:text-amber-400" aria-hidden="true" />
                 <span>Compare</span>
               </>
             ) : (
               <>
-                <Eye className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+                <Eye className="w-4 h-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
                 <span>Timeline</span>
               </>
             )}
@@ -459,10 +470,10 @@ export function SkyExplorerContent() {
           <button
             onClick={() => setIsTourOpen(true)}
             aria-label="Open Interactive Quick Tour"
-            className="min-h-[44px] flex flex-col items-center justify-center gap-0.5 rounded-xl border border-zinc-800 bg-zinc-900/80 text-zinc-300 hover:text-white text-[10px] font-medium active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="min-h-[44px] flex flex-col items-center justify-center gap-0.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-100 dark:bg-zinc-900/80 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white text-[10px] font-medium active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             title="Open Interactive Tour"
           >
-            <HelpCircle className="w-4 h-4 text-cyan-400" aria-hidden="true" />
+            <HelpCircle className="w-4 h-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
             <span>Tour</span>
           </button>
         </div>
@@ -480,7 +491,7 @@ export function SkyExplorerContent() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-zinc-900 bg-zinc-950/80 py-4 px-4 text-center text-xs text-zinc-400 font-mono">
+      <footer className="border-t border-slate-200 dark:border-zinc-900 bg-white/80 dark:bg-zinc-950/80 py-4 px-4 text-center text-xs text-slate-500 dark:text-zinc-400 font-mono transition-colors">
         SPHEREx Sky Explorer &bull; NASA Space Apps 2026 &ldquo;Planet X and SPHEREx&rdquo; Scaffold &bull; Heavy image processing offline in Python
       </footer>
     </div>
@@ -490,7 +501,9 @@ export function SkyExplorerContent() {
 export default function Page() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SkyExplorerContent />
+      <ThemeProvider>
+        <SkyExplorerContent />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -558,29 +558,29 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
 
   return (
     <div
-      className={`comparison-container flex flex-col gap-4 rounded-none sm:rounded-2xl border-y sm:border border-zinc-800/80 bg-zinc-950/90 p-3 sm:p-5 backdrop-blur-xl shadow-2xl ${className}`}
+      className={`comparison-container flex flex-col gap-4 rounded-none sm:rounded-2xl border-y sm:border border-slate-200 dark:border-zinc-800/80 bg-white/95 dark:bg-zinc-950/90 p-3 sm:p-5 backdrop-blur-xl shadow-lg dark:shadow-2xl transition-colors ${className}`}
     >
       {/* Header & Mode Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-800/70">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-zinc-800/70">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-cyan-950/70 border border-cyan-500/40 text-cyan-400 shadow-sm">
+          <div className="p-2 rounded-xl bg-cyan-100 border border-cyan-300 text-cyan-700 dark:bg-cyan-950/70 dark:border-cyan-500/40 dark:text-cyan-400 shadow-sm">
             <Flame className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-sm sm:text-base font-semibold text-zinc-100 flex items-center gap-2">
+            <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-zinc-100 flex items-center gap-2">
               Compare Epochs
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-cyan-400">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-cyan-700 dark:text-cyan-400">
                 3 Modes
               </span>
             </h3>
-            <p className="text-xs text-zinc-400">
+            <p className="text-xs text-slate-600 dark:text-zinc-400">
               Detect proper motion, transients, or brightness variations across SPHEREx observations.
             </p>
           </div>
         </div>
 
         {/* 3 Compare Modes: Blink | Side by side | Difference (All min-h-[44px]) */}
-        <div role="tablist" aria-label="Comparison Modes" className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1 rounded-xl bg-zinc-900/90 p-1 border border-zinc-700 text-xs shadow-inner">
+        <div role="tablist" aria-label="Comparison Modes" className="w-full sm:w-auto grid grid-cols-3 sm:flex items-center gap-1 rounded-xl bg-slate-100 dark:bg-zinc-900/90 p-1 border border-slate-300 dark:border-zinc-700 text-xs shadow-inner">
           <button
             data-tour="blink-mode"
             role="tab"
@@ -588,11 +588,11 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
             onClick={() => setCompareMode('blink')}
             className={`min-h-[44px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition active:scale-95 ${
               compareMode === 'blink'
-                ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
-                : 'text-zinc-300 hover:text-white'
+                ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm font-semibold dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 dark:shadow-md dark:ring-1 dark:ring-cyan-500/30'
+                : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
             }`}
           >
-            <ArrowLeftRight className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+            <ArrowLeftRight className="w-4 h-4 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <span>Blink</span>
           </button>
 
@@ -602,11 +602,11 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
             onClick={() => setCompareMode('side-by-side')}
             className={`min-h-[44px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition active:scale-95 ${
               compareMode === 'side-by-side'
-                ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
-                : 'text-zinc-300 hover:text-white'
+                ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm font-semibold dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 dark:shadow-md dark:ring-1 dark:ring-cyan-500/30'
+                : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
             }`}
           >
-            <Columns className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+            <Columns className="w-4 h-4 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <span className="truncate">Side by Side</span>
           </button>
 
@@ -617,11 +617,11 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
             onClick={() => setCompareMode('difference')}
             className={`min-h-[44px] flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition active:scale-95 ${
               compareMode === 'difference'
-                ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
-                : 'text-zinc-300 hover:text-white'
+                ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm font-semibold dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 dark:shadow-md dark:ring-1 dark:ring-cyan-500/30'
+                : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
             }`}
           >
-            <MinusCircle className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+            <MinusCircle className="w-4 h-4 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <span className="truncate">Diff (B&minus;A)</span>
           </button>
         </div>
@@ -630,15 +630,15 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
       {/* Frame Selectors: Frame A and Frame B dropdowns (All min-h-[44px]) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
         {/* Frame A Selector */}
-        <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-zinc-700 bg-zinc-900/60">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900/60">
           <div className="flex items-center justify-between">
-            <label htmlFor="frame-a-select" className="flex items-center gap-1.5 font-mono font-bold text-cyan-300">
-              <span className="w-5 h-5 rounded-md bg-cyan-950 border border-cyan-500/60 flex items-center justify-center text-xs text-cyan-200" aria-hidden="true">
+            <label htmlFor="frame-a-select" className="flex items-center gap-1.5 font-mono font-bold text-cyan-800 dark:text-cyan-300">
+              <span className="w-5 h-5 rounded-md bg-cyan-100 border border-cyan-300 text-cyan-800 dark:bg-cyan-950 dark:border-cyan-500/60 dark:text-cyan-200 flex items-center justify-center text-xs" aria-hidden="true">
                 A
               </span>
               <span>Frame A (Reference)</span>
             </label>
-            <span className="font-mono text-[11px] text-zinc-300">
+            <span className="font-mono text-[11px] text-slate-600 dark:text-zinc-300">
               {formatDateLabel(frameA)} • {frameA.wavelength_um.toFixed(2)} µm
             </span>
           </div>
@@ -648,10 +648,10 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
             value={indexA}
             onChange={(e) => setIndexA(Number(e.target.value))}
             aria-label="Select reference Frame A by observation date and wavelength"
-            className="w-full min-h-[44px] bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-zinc-200 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="w-full min-h-[44px] bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-700 rounded-xl px-3 py-2 text-slate-800 dark:text-zinc-200 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
             {frames.map((f, idx) => (
-              <option key={`a-${f.obs_id}-${idx}`} value={idx} className="bg-zinc-950 text-zinc-200">
+              <option key={`a-${f.obs_id}-${idx}`} value={idx} className="bg-white dark:bg-zinc-950 text-slate-800 dark:text-zinc-200">
                 Frame #{idx + 1} — {formatDateLabel(f)} — {f.wavelength_um.toFixed(2)} µm (Det {f.detector})
               </option>
             ))}
@@ -659,15 +659,15 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
         </div>
 
         {/* Frame B Selector */}
-        <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-zinc-700 bg-zinc-900/60">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl border border-slate-200 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900/60">
           <div className="flex items-center justify-between">
-            <label htmlFor="frame-b-select" className="flex items-center gap-1.5 font-mono font-bold text-amber-300">
-              <span className="w-5 h-5 rounded-md bg-amber-950 border border-amber-500/60 flex items-center justify-center text-xs text-amber-200" aria-hidden="true">
+            <label htmlFor="frame-b-select" className="flex items-center gap-1.5 font-mono font-bold text-amber-800 dark:text-amber-300">
+              <span className="w-5 h-5 rounded-md bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950 dark:border-amber-500/60 dark:text-amber-200 flex items-center justify-center text-xs" aria-hidden="true">
                 B
               </span>
               <span>Frame B (Target Epoch)</span>
             </label>
-            <span className="font-mono text-[11px] text-zinc-300">
+            <span className="font-mono text-[11px] text-slate-600 dark:text-zinc-300">
               {formatDateLabel(frameB)} • {frameB.wavelength_um.toFixed(2)} µm
             </span>
           </div>
@@ -677,10 +677,10 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
             value={indexB}
             onChange={(e) => setIndexB(Number(e.target.value))}
             aria-label="Select target Frame B by observation date and wavelength"
-            className="w-full min-h-[44px] bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-zinc-200 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="w-full min-h-[44px] bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-700 rounded-xl px-3 py-2 text-slate-800 dark:text-zinc-200 font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
             {frames.map((f, idx) => (
-              <option key={`b-${f.obs_id}-${idx}`} value={idx} className="bg-zinc-950 text-zinc-200">
+              <option key={`b-${f.obs_id}-${idx}`} value={idx} className="bg-white dark:bg-zinc-950 text-slate-800 dark:text-zinc-200">
                 Frame #{idx + 1} — {formatDateLabel(f)} — {f.wavelength_um.toFixed(2)} µm (Det {f.detector})
               </option>
             ))}
@@ -845,7 +845,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
           </div>
 
           {/* Blink Controls: Speed Slider (0.5 to 5.0 flips/sec) and Pause/Play (min-h-[44px]) */}
-          <div className="w-full flex flex-wrap items-center justify-between gap-3 p-3.5 sm:p-4 border-t border-zinc-900 bg-zinc-950/90 text-xs">
+          <div className="w-full flex flex-wrap items-center justify-between gap-3 p-3.5 sm:p-4 border-t border-slate-200 dark:border-zinc-900 bg-slate-50/90 dark:bg-zinc-950/90 text-xs">
             {/* Play / Pause Button (44px) */}
             <div className="flex items-center gap-2">
               <button
@@ -853,8 +853,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 aria-label={isBlinkPaused ? "Resume blinking alternate frames (Space key)" : "Pause blinking (Space key)"}
                 className={`min-h-[44px] flex items-center gap-2 px-5 py-2.5 rounded-xl border font-semibold text-xs transition shadow-md active:scale-95 ${
                   isBlinkPaused
-                    ? 'bg-cyan-950 border-cyan-500/60 text-cyan-200 hover:bg-cyan-900'
-                    : 'bg-amber-950 border-amber-500/60 text-amber-200 hover:bg-amber-900'
+                    ? 'bg-cyan-100 border-cyan-400 text-cyan-900 hover:bg-cyan-200 dark:bg-cyan-950 dark:border-cyan-500/60 dark:text-cyan-200 dark:hover:bg-cyan-900'
+                    : 'bg-amber-100 border-amber-400 text-amber-900 hover:bg-amber-200 dark:bg-amber-950 dark:border-amber-500/60 dark:text-amber-200 dark:hover:bg-amber-900'
                 }`}
               >
                 {isBlinkPaused ? (
@@ -870,13 +870,13 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 )}
               </button>
 
-              <div className="text-[11px] font-mono text-zinc-300 hidden xs:inline">
+              <div className="text-[11px] font-mono text-slate-600 dark:text-zinc-300 hidden xs:inline">
                 {isBlinkPaused ? '(Paused)' : '(Blinking)'}
               </div>
 
               {/* Prefers-reduced-motion notification */}
               {prefersReducedMotion && (
-                <span className="text-[10px] font-mono text-cyan-200 bg-cyan-950/90 border border-cyan-500/50 px-2 py-1 rounded">
+                <span className="text-[10px] font-mono text-cyan-800 bg-cyan-100 border border-cyan-300 dark:text-cyan-200 dark:bg-cyan-950/90 dark:border-cyan-500/50 px-2 py-1 rounded">
                   Reduced motion: Auto-blink off
                 </span>
               )}
@@ -884,7 +884,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
 
             {/* Speed Slider with 44px touch container */}
             <div className="flex items-center gap-2 flex-1 max-w-xs min-w-[170px] min-h-[44px]">
-              <span className="text-zinc-300 font-mono text-[11px] shrink-0 font-medium">Speed:</span>
+              <span className="text-slate-600 dark:text-zinc-300 font-mono text-[11px] shrink-0 font-medium">Speed:</span>
               <input
                 type="range"
                 min={0.5}
@@ -897,9 +897,9 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 aria-valuemax={5.0}
                 aria-valuenow={flipsPerSec}
                 aria-valuetext={`${flipsPerSec.toFixed(1)} flips per second`}
-                className="w-full h-3 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="w-full h-3 bg-slate-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-600 dark:accent-cyan-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               />
-              <span className="font-mono text-xs font-bold text-cyan-300 min-w-[65px] text-right">
+              <span className="font-mono text-xs font-bold text-cyan-700 dark:text-cyan-300 min-w-[65px] text-right">
                 {flipsPerSec.toFixed(1)}/s
               </span>
             </div>
@@ -911,10 +911,10 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
       {compareMode === 'side-by-side' && (
         <div className="flex flex-col gap-3">
           {/* Synced Zoom & Pan Controls Toolbar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-zinc-800/80 bg-zinc-900/60 text-xs">
-            <div className="flex items-center gap-2 text-zinc-300">
-              <span className="font-semibold text-cyan-300">Synced Controls:</span>
-              <span className="text-[11px] text-zinc-300">Drag either frame to pan both simultaneously</span>
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-zinc-900/60 text-xs">
+            <div className="flex items-center gap-2 text-slate-700 dark:text-zinc-300">
+              <span className="font-semibold text-cyan-700 dark:text-cyan-300">Synced Controls:</span>
+              <span className="text-[11px] text-slate-500 dark:text-zinc-300">Drag either frame to pan both simultaneously</span>
             </div>
 
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -922,7 +922,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 type="button"
                 onClick={() => setZoom((z) => Math.min(4.0, Number((z + 0.25).toFixed(2))))}
                 aria-label="Zoom in both frames"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 title="Zoom in both"
               >
                 <ZoomIn className="w-4 h-4" aria-hidden="true" />
@@ -932,7 +932,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 type="button"
                 onClick={() => setZoom((z) => Math.max(1.0, Number((z - 0.25).toFixed(2))))}
                 aria-label="Zoom out both frames"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 title="Zoom out both"
               >
                 <ZoomOut className="w-4 h-4" aria-hidden="true" />
@@ -942,7 +942,7 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 type="button"
                 onClick={resetZoomPan}
                 aria-label={`Reset zoom and pan, currently at ${zoom.toFixed(2)}x`}
-                className="min-h-[44px] px-3 flex items-center gap-1 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white active:scale-95 transition font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="min-h-[44px] px-3 flex items-center gap-1 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white active:scale-95 transition font-mono text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 title="Reset zoom and pan"
               >
                 <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
@@ -957,8 +957,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                   aria-label={showCometPosition ? 'Hide predicted comet position ring' : 'Show predicted comet position ring'}
                   className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-mono transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                     showCometPosition
-                      ? 'bg-cyan-950 border-cyan-500/60 text-cyan-200 ring-1 ring-cyan-500/30'
-                      : 'border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-white'
+                      ? 'bg-cyan-100 border-cyan-400 text-cyan-900 dark:bg-cyan-950 dark:border-cyan-500/60 dark:text-cyan-200 ring-1 ring-cyan-400/40 dark:ring-cyan-500/30'
+                      : 'border-slate-300 bg-white dark:border-zinc-700 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:text-white'
                   }`}
                   title="Toggle predicted comet position ring"
                 >
@@ -973,8 +973,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                 aria-label={showReticle ? 'Hide celestial coordinate reticle' : 'Show celestial coordinate reticle'}
                 className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                   showReticle
-                    ? 'bg-cyan-950 border-cyan-500/60 text-cyan-200'
-                    : 'border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-white'
+                    ? 'bg-white text-cyan-900 border-cyan-400 dark:bg-cyan-950 dark:border-cyan-500/60 dark:text-cyan-200'
+                    : 'border-slate-300 bg-white dark:border-zinc-700 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:text-white'
                 }`}
                 title="Toggle celestial reticle"
               >
@@ -1212,22 +1212,22 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
       {compareMode === 'difference' && (
         <div className="flex flex-col gap-3">
           {/* Controls Bar for Difference Mode */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-zinc-800/80 bg-zinc-900/60 text-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-zinc-900/60 text-xs">
             {/* Color Palette Toggle: Diverging vs Grayscale */}
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-zinc-300 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="font-semibold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                 Color Mode:
               </span>
-              <div className="flex items-center gap-1 bg-zinc-950 rounded-xl p-1 border border-zinc-800" role="group" aria-label="Difference Color Mode">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-zinc-950 rounded-xl p-1 border border-slate-200 dark:border-zinc-800" role="group" aria-label="Difference Color Mode">
                 <button
                   type="button"
                   onClick={() => setDiffColorMode('diverging')}
                   aria-pressed={diffColorMode === 'diverging'}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                     diffColorMode === 'diverging'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
-                      : 'text-zinc-300 hover:text-white'
+                      ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 dark:shadow-md dark:ring-1 dark:ring-cyan-500/30'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
                   }`}
                 >
                   Diverging (Blue ↔ Red)
@@ -1238,8 +1238,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                   aria-pressed={diffColorMode === 'grayscale'}
                   className={`min-h-[44px] px-3.5 py-2 rounded-lg text-xs font-semibold transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                     diffColorMode === 'grayscale'
-                      ? 'bg-cyan-950 text-cyan-200 border border-cyan-500/60 shadow-md ring-1 ring-cyan-500/30'
-                      : 'text-zinc-300 hover:text-white'
+                      ? 'bg-white text-cyan-900 border border-cyan-400 shadow-sm dark:bg-cyan-950 dark:text-cyan-200 dark:border-cyan-500/60 dark:shadow-md dark:ring-1 dark:ring-cyan-500/30'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
                   }`}
                 >
                   Grayscale (Neutral 128)
@@ -1249,8 +1249,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
 
             {/* Contrast / Gain Buttons (All min-h-[44px]) */}
             <div className="flex items-center gap-2">
-              <Sliders className="w-4 h-4 text-cyan-400" aria-hidden="true" />
-              <span className="text-zinc-300 font-mono text-xs font-medium">Gain:</span>
+              <Sliders className="w-4 h-4 text-cyan-600 dark:text-cyan-400" aria-hidden="true" />
+              <span className="text-slate-700 dark:text-zinc-300 font-mono text-xs font-medium">Gain:</span>
               <div className="flex items-center gap-1" role="group" aria-label="Difference Gain Presets">
                 {[1.0, 1.5, 2.5, 4.0].map((gain) => (
                   <button
@@ -1261,8 +1261,8 @@ export const ComparisonViewer: React.FC<ComparisonViewerProps> = ({
                     aria-label={`Set difference gain to ${gain}x`}
                     className={`min-h-[44px] min-w-[40px] px-2.5 rounded-xl text-xs font-mono font-semibold border flex items-center justify-center transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
                       diffGain === gain
-                        ? 'bg-cyan-950 border-cyan-500/70 text-cyan-200 shadow-md'
-                        : 'bg-zinc-950 border-zinc-700 text-zinc-300 hover:text-white'
+                        ? 'bg-white text-cyan-900 border-cyan-400 dark:bg-cyan-950 dark:border-cyan-500/70 dark:text-cyan-200 shadow-md'
+                        : 'bg-white dark:bg-zinc-950 border-slate-300 dark:border-zinc-700 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     {gain}x

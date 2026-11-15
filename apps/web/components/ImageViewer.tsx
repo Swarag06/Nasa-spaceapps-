@@ -199,15 +199,15 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
   return (
     <div
       data-tour="image-viewer"
-      className={`image-viewer-container relative w-full max-w-full flex flex-col items-center justify-center overflow-hidden rounded-none sm:rounded-2xl border-y sm:border border-zinc-800/80 bg-zinc-950/90 shadow-2xl backdrop-blur-xl ${className}`}
+      className={`image-viewer-container relative w-full max-w-full flex flex-col items-center justify-center overflow-hidden rounded-none sm:rounded-2xl border-y sm:border border-slate-200 dark:border-zinc-800/80 bg-white/90 dark:bg-zinc-950/90 shadow-lg dark:shadow-2xl backdrop-blur-xl transition-colors ${className}`}
     >
       {/* Top Banner if Stacked View is active */}
       {isStackedView && (
-        <div className="w-full p-3 sm:p-3.5 bg-amber-950/40 border-b border-amber-500/30 text-amber-200 text-xs flex items-start gap-2.5 z-20">
-          <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="w-full p-3 sm:p-3.5 bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs flex items-start gap-2.5 z-20">
+          <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-0.5">
-            <span className="font-semibold text-amber-300">Stacked View</span>
-            <span className="text-[11px] text-amber-200/90 leading-relaxed">
+            <span className="font-semibold text-amber-900 dark:text-amber-300">Stacked View</span>
+            <span className="text-[11px] text-amber-800 dark:text-amber-200/90 leading-relaxed">
               Many frames combined. Background stars are smeared out because they drift between frames, while the comet stays in place, so it stands out.
             </span>
           </div>
@@ -215,12 +215,12 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
       )}
 
       {/* Top Controls Overlay Bar: All buttons at least 44px tall for touch target accessibility */}
-      <div className="w-full flex flex-wrap items-center justify-between gap-2 p-2.5 sm:p-3 border-b border-zinc-900 bg-zinc-950/80 z-20">
+      <div className="w-full flex flex-wrap items-center justify-between gap-2 p-2.5 sm:p-3 border-b border-slate-200 dark:border-zinc-900 bg-slate-50/90 dark:bg-zinc-950/80 z-20">
         {/* Left: Wavelength badge or Stacked label */}
         <div className="flex items-center gap-2">
           {isStackedView ? (
-            <div className="min-h-[44px] inline-flex items-center gap-1.5 rounded-xl bg-amber-950/80 px-3 py-2 border border-amber-500/50 text-xs font-mono text-amber-300 shadow-md">
-              <Layers className="w-4 h-4 text-amber-400" />
+            <div className="min-h-[44px] inline-flex items-center gap-1.5 rounded-xl bg-amber-100 dark:bg-amber-950/80 px-3 py-2 border border-amber-300 dark:border-amber-500/50 text-xs font-mono text-amber-900 dark:text-amber-300 shadow-sm dark:shadow-md">
+              <Layers className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               <span>Co-added Stack</span>
             </div>
           ) : (
@@ -229,8 +229,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
 
           {/* Target Tracking Badge */}
           {tracking && (
-            <div className="min-h-[44px] hidden xs:inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-[11px] font-mono text-cyan-300">
-              <Target className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="min-h-[44px] hidden xs:inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-cyan-100 dark:bg-cyan-950/80 border border-cyan-300 dark:border-cyan-500/40 text-[11px] font-mono text-cyan-800 dark:text-cyan-300">
+              <Target className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               <span>Tracking</span>
             </div>
           )}
@@ -247,11 +247,11 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               aria-label={isStackedView ? "Switch back to single frames" : "Switch to stacked multi-epoch view"}
               className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-medium transition shadow-sm flex items-center gap-1.5 active:scale-95 ${
                 isStackedView
-                  ? 'bg-amber-950/90 border-amber-500/70 text-amber-200 ring-1 ring-amber-500/30'
-                  : 'bg-zinc-900 border-zinc-700 text-zinc-200 hover:text-white hover:bg-zinc-800'
+                  ? 'bg-amber-100 border-amber-400 text-amber-900 ring-1 ring-amber-400/40 dark:bg-amber-950/90 dark:border-amber-500/70 dark:text-amber-200 dark:ring-amber-500/30'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-200 dark:hover:text-white dark:hover:bg-zinc-800'
               }`}
             >
-              <Layers className="w-4 h-4 text-amber-300" aria-hidden="true" />
+              <Layers className="w-4 h-4 text-amber-600 dark:text-amber-300" aria-hidden="true" />
               <span>{isStackedView ? 'Single frames' : 'Stacked view'}</span>
             </button>
           )}
@@ -268,11 +268,11 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               }
               className={`min-h-[44px] px-3 py-2 rounded-xl border text-xs font-medium transition shadow-sm flex items-center gap-1.5 active:scale-95 ${
                 showCometPosition
-                  ? 'bg-cyan-950/90 border-cyan-500/70 text-cyan-200 ring-1 ring-cyan-500/30'
-                  : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-zinc-100'
+                  ? 'bg-cyan-100 border-cyan-400 text-cyan-900 ring-1 ring-cyan-400/40 dark:bg-cyan-950/90 dark:border-cyan-500/70 dark:text-cyan-200 dark:ring-cyan-500/30'
+                  : 'bg-white border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-300 dark:hover:text-zinc-100'
               }`}
             >
-              <Target className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+              <Target className="w-4 h-4 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
               <span className="hidden sm:inline">
                 {targetTitle?.toLowerCase().includes('vesta')
                   ? 'Vesta position'
@@ -285,7 +285,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
           )}
 
           {/* Reticle & Zoom controls toolbar */}
-          <div className="flex items-center gap-1 rounded-xl bg-zinc-900 p-0.5 border border-zinc-700">
+          <div className="flex items-center gap-1 rounded-xl bg-slate-100 dark:bg-zinc-900 p-0.5 border border-slate-300 dark:border-zinc-700">
             <button
               onClick={() => setShowCrosshair(!showCrosshair)}
               aria-pressed={showCrosshair}
@@ -293,8 +293,8 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               title={showCrosshair ? 'Hide Reticle' : 'Show Reticle'}
               className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg transition active:scale-95 ${
                 showCrosshair
-                  ? 'bg-cyan-950 border border-cyan-500/50 text-cyan-200'
-                  : 'text-zinc-300 hover:text-white'
+                  ? 'bg-white text-cyan-900 border border-cyan-400 dark:bg-cyan-950 dark:border-cyan-500/50 dark:text-cyan-200'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white'
               }`}
             >
               <Crosshair className="w-4 h-4" aria-hidden="true" />
@@ -304,7 +304,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
               onClick={() => setZoom((z) => Math.min(4.0, Number((z + 0.5).toFixed(1))))}
               aria-label="Zoom in"
               title="Zoom In"
-              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-zinc-300 hover:text-white active:scale-95 transition"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white active:scale-95 transition"
             >
               <ZoomIn className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -314,7 +314,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 onClick={resetZoomPan}
                 aria-label={`Reset zoom, currently at ${zoom.toFixed(1)}x`}
                 title="Reset Zoom"
-                className="min-h-[44px] px-2.5 flex items-center gap-1 rounded-lg text-cyan-200 bg-cyan-950/90 border border-cyan-500/50 text-[11px] font-mono active:scale-95 transition"
+                className="min-h-[44px] px-2.5 flex items-center gap-1 rounded-lg text-cyan-800 bg-white border border-cyan-400 dark:text-cyan-200 dark:bg-cyan-950/90 dark:border-cyan-500/50 text-[11px] font-mono active:scale-95 transition"
               >
                 <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{zoom.toFixed(1)}x</span>
@@ -325,7 +325,7 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 disabled={zoom <= 1.0}
                 aria-label="Zoom out"
                 title="Zoom Out"
-                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-zinc-300 hover:text-white disabled:opacity-40 active:scale-95 transition"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white disabled:opacity-40 active:scale-95 transition"
               >
                 <ZoomOut className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -343,21 +343,21 @@ export const ImageViewer: React.FC<ImageViewerProps> = ({
                 : `Download observation frame ${frame?.obs_id || 'image'}`
             }
             title={isStackedView ? 'Download Stacked Image' : 'Download Frame (PNG)'}
-            className="min-h-[44px] min-w-[44px] px-3 flex items-center justify-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white disabled:opacity-40 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="min-h-[44px] min-w-[44px] px-3 flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white disabled:opacity-40 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
             {hasDownloaded ? (
               <>
-                <Check className="w-4 h-4 text-emerald-400" aria-hidden="true" />
-                <span className="text-xs font-mono text-emerald-300">Saved</span>
+                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                <span className="text-xs font-mono text-emerald-700 dark:text-emerald-300">Saved</span>
               </>
             ) : isDownloading ? (
               <>
-                <div className="w-3.5 h-3.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
-                <span className="text-xs font-mono text-cyan-300">Saving</span>
+                <div className="w-3.5 h-3.5 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                <span className="text-xs font-mono text-cyan-700 dark:text-cyan-300">Saving</span>
               </>
             ) : (
               <>
-                <Download className="w-4 h-4 text-cyan-300" aria-hidden="true" />
+                <Download className="w-4 h-4 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
                 <span className="hidden sm:inline text-xs font-medium">Download</span>
               </>
             )}

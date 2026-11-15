@@ -113,20 +113,20 @@ export const Timeline: React.FC<TimelineProps> = ({
       data-tour="timeline"
       role="region"
       aria-label="Epoch Timeline Controls. Use Arrow Left and Arrow Right keys to step frames."
-      className="w-full max-w-full flex flex-col gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/90 p-3.5 sm:p-4 backdrop-blur-md shadow-xl overflow-x-hidden"
+      className="w-full max-w-full flex flex-col gap-3 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white/90 dark:bg-zinc-950/90 p-3.5 sm:p-4 backdrop-blur-md shadow-lg dark:shadow-xl overflow-x-hidden transition-colors"
     >
       {/* Slider & progress info */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between text-xs font-mono">
           <div className="flex items-center gap-1.5 truncate">
-            <span className="text-zinc-200 font-semibold">Timeline</span>
-            <span className="text-zinc-400" aria-hidden="true">&bull;</span>
-            <span className="text-cyan-300 font-bold">
+            <span className="text-slate-900 dark:text-zinc-200 font-semibold">Timeline</span>
+            <span className="text-slate-400 dark:text-zinc-400" aria-hidden="true">&bull;</span>
+            <span className="text-cyan-700 dark:text-cyan-300 font-bold">
               Epoch {currentIndex + 1}/{totalFrames}
             </span>
           </div>
 
-          <div className="text-[11px] text-zinc-300 font-mono truncate ml-2">
+          <div className="text-[11px] text-slate-600 dark:text-zinc-300 font-mono truncate ml-2">
             {formattedDate}
           </div>
         </div>
@@ -144,12 +144,12 @@ export const Timeline: React.FC<TimelineProps> = ({
             aria-valuemax={totalFrames}
             aria-valuenow={currentIndex + 1}
             aria-valuetext={`Epoch ${currentIndex + 1} of ${totalFrames}: ${formattedDate}`}
-            className="w-full h-3 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 transition-all hover:bg-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="w-full h-3 bg-slate-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-cyan-600 dark:accent-cyan-400 transition-all hover:bg-slate-300 dark:hover:bg-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           />
         </div>
 
         {/* Touch-friendly Frame ticks indicator */}
-        <div className="flex justify-between px-1 text-[11px] font-mono text-zinc-400 overflow-x-hidden" role="tablist" aria-label="Individual Epoch Frames">
+        <div className="flex justify-between px-1 text-[11px] font-mono text-slate-500 dark:text-zinc-400 overflow-x-hidden" role="tablist" aria-label="Individual Epoch Frames">
           {frames.map((frame, idx) => (
             <button
               key={frame.obs_id || idx}
@@ -157,10 +157,10 @@ export const Timeline: React.FC<TimelineProps> = ({
               role="tab"
               aria-selected={idx === currentIndex}
               aria-label={`Jump to frame ${idx + 1} of ${totalFrames}${idx === currentIndex ? ' (current frame)' : ''}`}
-              className={`py-1 px-1.5 transition-colors min-h-[44px] min-w-[28px] sm:min-w-[36px] flex items-center justify-center rounded-lg hover:text-cyan-200 active:scale-95 ${
+              className={`py-1 px-1.5 transition-colors min-h-[44px] min-w-[28px] sm:min-w-[36px] flex items-center justify-center rounded-lg active:scale-95 ${
                 idx === currentIndex
-                  ? 'text-cyan-200 font-bold bg-cyan-950/80 border border-cyan-500/60 ring-1 ring-cyan-500/30'
-                  : 'text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200'
+                  ? 'text-cyan-900 font-bold bg-cyan-100 border border-cyan-400 ring-1 ring-cyan-400/40 dark:text-cyan-200 dark:bg-cyan-950/80 dark:border-cyan-500/60 dark:ring-cyan-500/30'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-200'
               }`}
             >
               #{idx + 1}
@@ -170,7 +170,7 @@ export const Timeline: React.FC<TimelineProps> = ({
       </div>
 
       {/* Control Buttons Bar: All buttons at least 44px tall (min-h-[44px]) */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-zinc-800/80">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-slate-200 dark:border-zinc-800/80">
         <div className="flex items-center gap-2">
           {/* Previous Frame (44px) */}
           <button
@@ -178,7 +178,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             disabled={totalFrames <= 1}
             aria-label="Previous frame (Arrow Left key)"
             title="Previous frame (Arrow Left)"
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/90 text-zinc-200 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shadow-sm"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900/90 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shadow-sm"
           >
             <ChevronLeft className="w-5 h-5" aria-hidden="true" />
           </button>
@@ -192,8 +192,8 @@ export const Timeline: React.FC<TimelineProps> = ({
             title={isPlaying ? 'Pause (Space)' : 'Play (Space)'}
             className={`min-h-[44px] px-5 rounded-xl font-semibold text-xs transition shadow-md flex items-center gap-2 active:scale-95 ${
               isPlaying
-                ? 'bg-amber-950/90 text-amber-200 border border-amber-500/60 hover:bg-amber-900'
-                : 'bg-cyan-950/90 text-cyan-200 border border-cyan-500/60 hover:bg-cyan-900'
+                ? 'bg-amber-100 text-amber-900 border border-amber-400 hover:bg-amber-200 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-500/60 dark:hover:bg-amber-900'
+                : 'bg-cyan-100 text-cyan-900 border border-cyan-400 hover:bg-cyan-200 dark:bg-cyan-950/90 dark:text-cyan-200 dark:border-cyan-500/60 dark:hover:bg-cyan-900'
             } disabled:opacity-40 disabled:cursor-not-allowed`}
           >
             {isPlaying ? (
@@ -215,7 +215,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             disabled={totalFrames <= 1}
             aria-label="Next frame (Arrow Right key)"
             title="Next frame (Arrow Right)"
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/90 text-zinc-200 hover:text-white hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shadow-sm"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900/90 text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition shadow-sm"
           >
             <ChevronRight className="w-5 h-5" aria-hidden="true" />
           </button>
@@ -225,7 +225,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             onClick={() => onChangeIndex(0)}
             title="Reset to first frame (Home key)"
             aria-label="Reset to first frame (Home key)"
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-zinc-700 bg-zinc-900/80 text-zinc-300 hover:text-white hover:bg-zinc-800 active:scale-95 transition"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900/80 text-slate-700 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800 active:scale-95 transition"
           >
             <RotateCcw className="w-4 h-4" aria-hidden="true" />
           </button>
@@ -233,8 +233,8 @@ export const Timeline: React.FC<TimelineProps> = ({
 
         {/* Playback speed presets (All min-h-[44px]) */}
         {onChangeFps && (
-          <div className="flex items-center gap-1 text-xs font-mono text-zinc-300" role="group" aria-label="Playback Speed">
-            <span className="hidden sm:inline text-[11px] mr-1 text-zinc-400">Speed:</span>
+          <div className="flex items-center gap-1 text-xs font-mono text-slate-700 dark:text-zinc-300" role="group" aria-label="Playback Speed">
+            <span className="hidden sm:inline text-[11px] mr-1 text-slate-500 dark:text-zinc-400">Speed:</span>
             {[1, 2, 4].map((speed) => (
               <button
                 key={speed}
@@ -243,8 +243,8 @@ export const Timeline: React.FC<TimelineProps> = ({
                 aria-label={`Set speed to ${speed} frames per second`}
                 className={`min-h-[44px] min-w-[40px] px-2.5 rounded-xl text-xs border flex items-center justify-center active:scale-95 transition ${
                   fps === speed
-                    ? 'bg-cyan-950 border-cyan-500/70 text-cyan-200 font-bold shadow-sm'
-                    : 'bg-zinc-900/80 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800'
+                    ? 'bg-white text-cyan-900 border-cyan-400 dark:bg-cyan-950 dark:border-cyan-500/70 dark:text-cyan-200 font-bold shadow-sm'
+                    : 'bg-white hover:bg-slate-100 dark:bg-zinc-900/80 border-slate-300 dark:border-zinc-700 text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800'
                 }`}
               >
                 {speed}x

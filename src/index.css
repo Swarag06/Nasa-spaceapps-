@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ==========================================================================
-   CSS Media Queries & Responsive Layout Engine (900px Breakpoint)
+   Theme Variables & Root Setup
    ========================================================================== */
 
 html,
@@ -13,8 +15,24 @@ body,
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-color: #07090e;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark,
+html.dark body,
+html.dark #root {
+  background-color: #07090e;
+  color: #f4f4f5;
+  color-scheme: dark;
+}
+
+html:not(.dark),
+html:not(.dark) body,
+html:not(.dark) #root {
+  background-color: #f8fafc;
+  color: #0f172a;
+  color-scheme: light;
 }
 
 *,
@@ -41,7 +59,13 @@ select,
 
 /* Visible high-contrast focus outline for all interactive controls */
 :focus-visible {
-  outline: 2px solid #22d3ee !important; /* Tailwind cyan-400: high contrast against dark */
+  outline: 2px solid #0891b2 !important; /* cyan-600 in light mode */
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(8, 145, 178, 0.25) !important;
+}
+
+.dark :focus-visible {
+  outline: 2px solid #22d3ee !important; /* cyan-400 in dark mode */
   outline-offset: 2px !important;
   box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25) !important;
 }

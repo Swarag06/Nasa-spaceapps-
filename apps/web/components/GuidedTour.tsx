@@ -577,7 +577,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                 transition: prefersReducedMotion ? 'none' : 'top 0.18s ease-out, left 0.18s ease-out',
               }
         }
-        className="rounded-2xl border border-zinc-700/90 bg-[#0c1017]/95 p-4 sm:p-5 shadow-[0_15px_40px_rgba(0,0,0,0.85)] backdrop-blur-2xl text-zinc-100 flex flex-col gap-3.5"
+        className="rounded-2xl border border-slate-200 dark:border-zinc-700/90 bg-white/95 dark:bg-[#0c1017]/95 p-4 sm:p-5 shadow-[0_15px_40px_rgba(0,0,0,0.15)] dark:shadow-[0_15px_40px_rgba(0,0,0,0.85)] backdrop-blur-2xl text-slate-900 dark:text-zinc-100 flex flex-col gap-3.5"
       >
         {/* Small Arrow pointing at element on Desktop */}
         {!isMobile && (
@@ -591,9 +591,9 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                     width: '12px',
                     height: '12px',
                     transform: 'rotate(45deg)',
-                    backgroundColor: '#0c1017',
-                    borderTop: '1px solid #3f3f46',
-                    borderLeft: '1px solid #3f3f46',
+                    backgroundColor: 'var(--tooltip-bg, #0c1017)',
+                    borderTop: '1px solid #71717a',
+                    borderLeft: '1px solid #71717a',
                   }
                 : tooltipPos.side === 'above'
                 ? {
@@ -603,9 +603,9 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                     width: '12px',
                     height: '12px',
                     transform: 'rotate(45deg)',
-                    backgroundColor: '#0c1017',
-                    borderBottom: '1px solid #3f3f46',
-                    borderRight: '1px solid #3f3f46',
+                    backgroundColor: 'var(--tooltip-bg, #0c1017)',
+                    borderBottom: '1px solid #71717a',
+                    borderRight: '1px solid #71717a',
                   }
                 : tooltipPos.side === 'right'
                 ? {
@@ -615,9 +615,9 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                     width: '12px',
                     height: '12px',
                     transform: 'rotate(45deg)',
-                    backgroundColor: '#0c1017',
-                    borderBottom: '1px solid #3f3f46',
-                    borderLeft: '1px solid #3f3f46',
+                    backgroundColor: 'var(--tooltip-bg, #0c1017)',
+                    borderBottom: '1px solid #71717a',
+                    borderLeft: '1px solid #71717a',
                   }
                 : {
                     position: 'absolute',
@@ -626,9 +626,9 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                     width: '12px',
                     height: '12px',
                     transform: 'rotate(45deg)',
-                    backgroundColor: '#0c1017',
-                    borderTop: '1px solid #3f3f46',
-                    borderRight: '1px solid #3f3f46',
+                    backgroundColor: 'var(--tooltip-bg, #0c1017)',
+                    borderTop: '1px solid #71717a',
+                    borderRight: '1px solid #71717a',
                   }
             }
             aria-hidden="true"
@@ -638,7 +638,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
         {/* Header: Step counter ("3 of 9") and Skip Tour button */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/50 text-cyan-300">
+            <span className="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-950 border border-cyan-300 dark:border-cyan-500/50 text-cyan-800 dark:text-cyan-300">
               {currentStepNumber} of {totalVisibleCount}
             </span>
           </div>
@@ -646,7 +646,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
           <button
             type="button"
             onClick={handleSkip}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 -mr-2 -mt-2"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-zinc-800/80 active:scale-95 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 -mr-2 -mt-2"
             aria-label="Skip guided tour"
           >
             <X className="w-4 h-4" aria-hidden="true" />
@@ -655,21 +655,21 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
 
         {/* Content: Step Title & Description */}
         <div className="flex flex-col gap-1.5">
-          <h3 id="tour-step-title" className="text-sm sm:text-base font-bold text-white tracking-tight flex items-center gap-2">
-            <Compass className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
+          <h3 id="tour-step-title" className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <Compass className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" aria-hidden="true" />
             <span>{currentStep.title}</span>
           </h3>
-          <p id="tour-step-desc" className="text-xs text-zinc-300 leading-relaxed font-sans">
+          <p id="tour-step-desc" className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-sans">
             {currentStep.description}
           </p>
         </div>
 
         {/* Action Buttons: All at least 44px tall for touch target accessibility */}
-        <div className="flex items-center justify-between pt-1 border-t border-zinc-800/80">
+        <div className="flex items-center justify-between pt-1 border-t border-slate-200 dark:border-zinc-800/80">
           <button
             type="button"
             onClick={handleSkip}
-            className="min-h-[44px] px-2.5 flex items-center text-xs font-mono text-zinc-400 hover:text-zinc-200 transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="min-h-[44px] px-2.5 flex items-center text-xs font-mono text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
             Skip tour
           </button>
@@ -680,7 +680,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                 type="button"
                 onClick={handlePrev}
                 disabled={isTransitioning}
-                className="min-h-[44px] px-3.5 flex items-center gap-1.5 rounded-xl border border-zinc-700 bg-zinc-900/90 hover:bg-zinc-800 text-xs font-medium text-zinc-200 hover:text-white transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="min-h-[44px] px-3.5 flex items-center gap-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white hover:bg-slate-100 dark:bg-zinc-900/90 dark:hover:bg-zinc-800 text-xs font-medium text-slate-700 hover:text-slate-900 dark:text-zinc-200 dark:hover:text-white transition active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                 aria-label="Previous tour step (Left arrow key)"
               >
                 <ChevronLeft className="w-4 h-4" aria-hidden="true" />
