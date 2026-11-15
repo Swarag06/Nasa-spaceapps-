@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from typing import List, Optional
 
-from services.api.app.schemas import TargetFramesIndex, TargetSummary
+from ..schemas import TargetFramesIndex, TargetSummary
 
 
 def get_data_frames_dir() -> Path:
@@ -13,11 +13,11 @@ def get_data_frames_dir() -> Path:
     env_dir = os.getenv("DATA_FRAMES_DIR", "data/frames")
     path = Path(env_dir)
     if not path.is_absolute():
-        # Resolve relative to project root (where services/ or data/ is located)
-        root = Path(__file__).resolve().parents[4]
-        candidate = root / env_dir
-        if candidate.exists():
-            return candidate
+        resolved = Path(__file__).resolve()
+        for parent in resolved.parents:
+            candidate = parent / env_dir
+            if candidate.exists():
+                return candidate
     return path
 
 

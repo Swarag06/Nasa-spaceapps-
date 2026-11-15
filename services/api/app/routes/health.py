@@ -1,7 +1,7 @@
 """Health check route."""
 
 from fastapi import APIRouter
-from services.api.app.schemas import HealthResponse
+from ..schemas import HealthResponse
 
 router = APIRouter(tags=["health"])
 

@@ -3,8 +3,8 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, status
 
-from services.api.app.schemas import TargetFramesIndex, TargetSummary
-from services.api.app.services.frames import get_target_frames, list_targets
+from ..schemas import TargetFramesIndex, TargetSummary
+from ..services.frames import get_target_frames, list_targets
 
 router = APIRouter(prefix="/targets", tags=["targets"])
 
